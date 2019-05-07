@@ -1,0 +1,14 @@
+{
+  "name": "erc-792",
+  "version": "1.0.0",
+  "description": "ERC-792: Arbitration Standard",
+  "main": "index.js",
+  "repository": "https://github.com/kleros/erc-792",
+  "author": "Kleros",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@kleros/kathari": "^0.23.0",
+    "truffle": "^5.0.15"
+  }
+}
