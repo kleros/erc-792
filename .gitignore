@@ -6,6 +6,10 @@
 # Production
 /build/
 
+# Docs
+/livehtml/
+/docs/build/
+
 # Logs
 /yarn-debug.log*
 /yarn-error.log*
