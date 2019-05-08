@@ -11,6 +11,7 @@ Welcome to ERC-792's documentation!
    implementing-an-arbitrable
    implementing-an-arbitrator
    erc-1497
+   web-app-example
 
 
 Indices and tables
