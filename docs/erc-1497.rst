@@ -1,5 +1,5 @@
-========
-ERC-1497
-========
+===============================
+ERC-1497: The Evidence Standard
+===============================
 
 .. todo:: Extending ERC-792 with evidence handling.
