@@ -2,6 +2,9 @@
 Introduction
 ===============
 
+.. warning::
+  This documentation is work-in-progress.
+
 ERC-792: The Arbitration Standard proposes for arbitration on Ethereum. The standard has two types of smart contracts: ``Arbitrable`` and ``Arbitrator``.
 
 ``Arbitrable`` contracts are the contracts on which rulings of the authorized ``Arbitrator`` are enforceable.
