@@ -7,6 +7,7 @@
 pragma solidity ^0.5.8;
 
 import "./IArbitrable.sol";
+import "./erc-1497/IEvidence.sol";
 
 /** @title Arbitrable
  *  Arbitrable abstract contract.
@@ -16,7 +17,7 @@ import "./IArbitrable.sol";
  *      -Call arbitrator.createDispute.value(_fee)(_choices,_extraData);
  *      -Create the event Dispute(_arbitrator,_disputeID,_rulingOptions);
  */
-contract Arbitrable is IArbitrable {
+contract Arbitrable is IArbitrable, IEvidence {
     Arbitrator public arbitrator;
     bytes public arbitratorExtraData; // Extra data to require particular dispute and appeal behaviour.
 
