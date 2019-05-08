@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'ERC-792: Arbitration Standard'
+project = 'ERC-792: The Arbitration Standard'
 copyright = '2019, Kleros'
 author = 'Kleros'
 

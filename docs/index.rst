@@ -1,5 +1,5 @@
-Welcome to ERC-792's documentation!
-===================================
+ERC-792: The Arbitration Standard
+=================================
 
 .. toctree::
    :maxdepth: 2
