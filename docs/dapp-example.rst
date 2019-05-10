@@ -1,5 +1,5 @@
 ================
-A Simple Web App
+A Simple DApp
 ================
 
 .. todo::
