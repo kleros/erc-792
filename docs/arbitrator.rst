@@ -3,7 +3,8 @@ Arbitrator
 ==========
 
 
-.. code-block::javascript
+.. code-block::none
+  :linenothreshold: 10
 
 contract Arbitrator {
 
@@ -46,6 +47,10 @@ contract Arbitrator {
 
 }
 
+
+Dispute Status
+##############
+
 *Disputes* has three statuses: ``Waiting`` , ``Appealable`` and ``Solved`` :
 
 * A *dispute* is in ``Waiting`` state when it arises (get's created, by ``createDispute`` function).
@@ -53,6 +58,10 @@ contract Arbitrator {
 * Is in ``Appealable`` state when it got a *ruling* and if the ``Arbitrator`` lets to appeal a *ruling*. When the ``Arbitrator`` lets to appeal, often it gives a time period to do so, after that the dispute will no longer be ``Appealable`` but ``Solved``.
 
 * Is in ``Solved`` state when it got a *ruling* and the *ruling* is final. Note that this doesn't imply ``rule`` function on the ``Arbitrable`` has been called to execute the *ruling*. It means the decision on the *dispute* is final and to be executed.
+
+
+Events
+######
 
 There are three events to be emitted:
 
@@ -62,6 +71,9 @@ There are three events to be emitted:
 
 * ``AppealDecision`` when *current ruling* is *appealed*.
 
+
+Functions
+#########
 
 And seven functions:
 
