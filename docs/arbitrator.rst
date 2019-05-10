@@ -3,49 +3,48 @@ Arbitrator
 ==========
 
 
-.. code-block::none
-  :linenothreshold: 10
+.. code-block:: javascript
 
-contract Arbitrator {
+  contract Arbitrator {
 
-    enum DisputeStatus {Waiting, Appealable, Solved}
+      enum DisputeStatus {Waiting, Appealable, Solved}
 
-    modifier requireArbitrationFee(bytes memory _extraData) {
-        require(msg.value >= arbitrationCost(_extraData), "Not enough ETH to cover arbitration costs.");
-        _;
+      modifier requireArbitrationFee(bytes memory _extraData) {
+          require(msg.value >= arbitrationCost(_extraData), "Not enough ETH to cover arbitration costs.");
+          _;
 
-    }
+      }
 
-    modifier requireAppealFee(uint _disputeID, bytes memory _extraData) {
-        require(msg.value >= appealCost(_disputeID, _extraData), "Not enough ETH to cover appeal costs.");
-        _;
+      modifier requireAppealFee(uint _disputeID, bytes memory _extraData) {
+          require(msg.value >= appealCost(_disputeID, _extraData), "Not enough ETH to cover appeal costs.");
+          _;
 
-    }
+      }
 
-    event DisputeCreation(uint indexed _disputeID, Arbitrable indexed _arbitrable);
+      event DisputeCreation(uint indexed _disputeID, Arbitrable indexed _arbitrable);
 
-    event AppealPossible(uint indexed _disputeID, Arbitrable indexed _arbitrable);
+      event AppealPossible(uint indexed _disputeID, Arbitrable indexed _arbitrable);
 
-    event AppealDecision(uint indexed _disputeID, Arbitrable indexed _arbitrable);
+      event AppealDecision(uint indexed _disputeID, Arbitrable indexed _arbitrable);
 
-    function createDispute(uint _choices, bytes memory _extraData) public requireArbitrationFee(_extraData) payable returns(uint disputeID) {}
+      function createDispute(uint _choices, bytes memory _extraData) public requireArbitrationFee(_extraData) payable returns(uint disputeID) {}
 
-    function arbitrationCost(bytes memory _extraData) public view returns(uint fee);
+      function arbitrationCost(bytes memory _extraData) public view returns(uint fee);
 
-    function appeal(uint _disputeID, bytes memory _extraData) public requireAppealFee(_disputeID,_extraData) payable {
-        emit AppealDecision(_disputeID, Arbitrable(msg.sender));
+      function appeal(uint _disputeID, bytes memory _extraData) public requireAppealFee(_disputeID,_extraData) payable {
+          emit AppealDecision(_disputeID, Arbitrable(msg.sender));
 
-    }
+      }
 
-    function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee);
+      function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee);
 
-    function appealPeriod(uint _disputeID) public view returns(uint start, uint end) {}
+      function appealPeriod(uint _disputeID) public view returns(uint start, uint end) {}
 
-    function disputeStatus(uint _disputeID) public view returns(DisputeStatus status);
+      function disputeStatus(uint _disputeID) public view returns(DisputeStatus status);
 
-    function currentRuling(uint _disputeID) public view returns(uint ruling);
+      function currentRuling(uint _disputeID) public view returns(uint ruling);
 
-}
+  }
 
 
 Dispute Status

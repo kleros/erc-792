@@ -2,16 +2,15 @@
 Arbitrable
 ==========
 
-.. code-block::none
-  :linenothreshold: 10
+.. code-block:: javascript
 
-interface IArbitrable {
+  interface IArbitrable {
 
-    function rule(uint _disputeID, uint _ruling) external;
+      function rule(uint _disputeID, uint _ruling) external;
 
-    event Ruling(Arbitrator indexed _arbitrator, uint indexed _disputeID, uint _ruling);
+      event Ruling(Arbitrator indexed _arbitrator, uint indexed _disputeID, uint _ruling);
 
-}
+  }
 
 
 ``rule`` is the function to be called by ``Arbitrator`` to give a *ruling* to a *dispute*.
