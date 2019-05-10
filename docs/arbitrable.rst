@@ -2,7 +2,8 @@
 Arbitrable
 ==========
 
-.. code-block::javascript
+.. code-block::none
+  :linenothreshold: 10
 
 interface IArbitrable {
 
@@ -13,6 +14,6 @@ interface IArbitrable {
 }
 
 
-``rule`` is the function to be called by the ``Arbitrator`` to give a *ruling* to a *dispute*.
+``rule`` is the function to be called by ``Arbitrator`` to give a *ruling* to a *dispute*.
 
-``Ruling`` is the event which has to be emitted whenever a *ruling* is given thus inside the ``rule`` function.
+``Ruling`` is the event which has to be emitted whenever a *final ruling* is given.  For example, inside ``rule`` function, where the ruling is final and gets enforced.
