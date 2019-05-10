@@ -1,4 +1,4 @@
-ERC-792: The Arbitration Standard
+ERC-792: Arbitration Standard
 =================================
 
 .. toctree::
@@ -11,7 +11,7 @@ ERC-792: The Arbitration Standard
    implementing-an-arbitrable
    implementing-an-arbitrator
    erc-1497
-   web-app-example
+   dapp-example
 
 
 Indices and tables
