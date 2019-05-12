@@ -26,7 +26,7 @@ Let's start by implementing cost functions:
   }
 
 We set arbitration fee to ``0.1 ether`` and appeal fee to an astronomic amount which can't be afforded.
-So in practice, we disabled appealing. We did implement neither a dynamic cost nor a setter to update the cost. Instead we made it constant, for sake of simplicity of this tutorial.
+So in practice, we disabled appealing, for simplicity. We did implement neither a dynamic cost nor a setter to update the cost. Instead we made it constant, again, for sake of simplicity of this tutorial.
 
 Next, we need a data structure to keep track of disputes:
 
@@ -57,7 +57,7 @@ Next, we need a data structure to keep track of disputes:
   }
 
 Each dispute belongs to an ``Arbitrable`` contract, so we have ``arbitrated`` field for it.
-Each dispute has a number of ruling options: Like Party A wins and Party B wins. We can also use the option at index zero for abstain / refuse to arbitrate.
+Each dispute has a number of ruling options: For example, Party A wins and Party B wins. We can also use the option at index zero for abstain / refuse to arbitrate.
 Each dispute will have a ruling, we will store it inside ``ruling`` field.
 Finally, each dispute will have a status, and we store it inside ``status`` field.
 
@@ -101,7 +101,7 @@ Next, we can implement the function for creating disputes:
       }
   }
 
-Recall that ``createDispute`` function from abstract ``Arbitrator`` contract: ``function createDispute(uint _choices, bytes memory _extraData) public requireArbitrationFee(_extraData) payable returns(uint disputeID) {}``. We, first execute ``super.createDispute(_choices, _extraData)`` to apply ``requireArbitrationFee`` modifier. So if caller of ``createDispute`` doesn't pass required amount of ether with the call, function will revert. Then, we create the dispute by pushing a new element to the array: ``disputes.push( ... )``. ``push`` function returns resulting size of the array, so we can use the return value of ``disputes.push( ... ) -1`` as ``disputeID``. Finally, we emit ``DisputeCreation`` as required in the standard.
+Recall that ``createDispute`` function from abstract ``Arbitrator`` contract: ``function createDispute(uint _choices, bytes memory _extraData) public requireArbitrationFee(_extraData) payable returns(uint disputeID) {}``. We, first execute ``super.createDispute(_choices, _extraData)`` to apply ``requireArbitrationFee`` modifier. So if caller of ``createDispute`` doesn't pass required amount of ether with the call, function will revert. Then, we create the dispute by pushing a new element to the array: ``disputes.push( ... )``. The ``push`` function returns resulting size of the array, thus we can use the return value of ``disputes.push( ... ) -1`` as ``disputeID``. Finally, we emit ``DisputeCreation`` as required in the standard.
 
 We also need to implement getters for ``status`` and ``ruling``:
 
