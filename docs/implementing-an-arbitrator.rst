@@ -2,10 +2,10 @@
 Implementing an Arbitrator
 ==========================
 
-.. note::
-  This tutorial requires basic Solidity programming skills.
+.. warning::
+  Smart contracts in this tutorial are not intended for production but educational purposes. Beware of using them on main network.
 
-First we will implement a very simple arbitrator where single wallet gives rulings and there won't be any appeals.
+To demonstrate how to use the standard, we will implement a very simple arbitrator where single wallet gives rulings and there won't be any appeals.
 
 Let's start by implementing cost functions:
 
@@ -266,4 +266,4 @@ Then the proxy function:
 First we check the caller address, we should only let the ``owner`` to execute this. Then we do sanity checks: Given ruling should be chosen among the ``choices`` and one should not be able to ``rule`` on an already solved dispute.
 Then we update ``ruling`` and ``status`` values of the dispute. Then we pay arbitration fee to the arbitrator (``owner``). And finally, we call ``rule`` function of the ``arbitrated`` to enforce the ruling.
 
-That's it, we have a working, very simple and centralized arbitrator!
+That's it, we have a working, very simple centralized arbitrator!
