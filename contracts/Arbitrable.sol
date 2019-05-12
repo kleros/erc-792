@@ -10,7 +10,7 @@ import "./IArbitrable.sol";
 import "./erc-1497/IEvidence.sol";
 
 /** @title Arbitrable
- *  Arbitrable abstract contract.
+ *  Arbitrable abstract contract that implements ERC-792 and ERC-1497.
  *  When developing arbitrable contracts, we need to:
  *  -Define the action taken when a ruling is received by the contract. We should do so in executeRuling.
  *  -Allow dispute creation. For this a function must:
