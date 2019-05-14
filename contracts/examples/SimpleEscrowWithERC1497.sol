@@ -9,8 +9,8 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     address payable public payee;
     uint public value;
     Arbitrator public arbitrator;
-    uint constant public reclamationPeriod = 3 days;
-    uint constant public arbitrationFeeDepositPeriod = 3 days;
+    uint constant public reclamationPeriod = 3 minutes;
+    uint constant public arbitrationFeeDepositPeriod = 3 minutes;
     uint public createdAt;
 
     bool public disputed;

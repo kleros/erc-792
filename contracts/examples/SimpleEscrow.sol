@@ -7,8 +7,8 @@ contract SimpleEscrow is IArbitrable {
     address payable public payee;
     uint public value;
     Arbitrator public arbitrator;
-    uint constant public reclamationPeriod = 3 days;
-    uint constant public arbitrationFeeDepositPeriod = 3 days;
+    uint constant public reclamationPeriod = 3 minutes;
+    uint constant public arbitrationFeeDepositPeriod = 3 minutes;
     string public agreement;
     uint public createdAt;
 
