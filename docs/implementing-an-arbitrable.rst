@@ -95,7 +95,7 @@ If so, we update ``resolved`` and send the funds to ``payee``.
 Moving forward to second scenario:
 
 .. code-block:: javascript
-  :emphasize-lines: 18,19,21,33,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71
+  :emphasize-lines: 18,19,21,33,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73
 
   pragma solidity ^0.5.8;
   import "../IArbitrable.sol";
@@ -158,6 +158,7 @@ Moving forward to second scenario:
           require(!disputed, "There is a dispute.");
           require(reclaimedAt > 0, "Payer didn't reclaim, nothing to dispute.");
           arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
+          disputed = true;
       }
 
       function rule(uint _disputeID, uint _ruling) public {
