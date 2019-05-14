@@ -69,7 +69,7 @@ contract SimpleEscrow is IArbitrable {
         require(!resolved, "Already resolved");
         require(disputed, "There should be dispute to execute a ruling.");
         resolved = true;
-        if(_ruling == uint(RulingOptions.PayeeWins)) payer.send(address(this).balance);
+        if(_ruling == uint(RulingOptions.PayerWins)) payer.send(address(this).balance);
         else payee.send(address(this).balance);
         emit Ruling(arbitrator, _disputeID, _ruling);
     }
