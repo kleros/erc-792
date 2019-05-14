@@ -1,4 +1,5 @@
 pragma solidity ^0.5.8;
+
 import "../Arbitrator.sol";
 
 contract SimpleCentralizedArbitrator is Arbitrator {
@@ -6,7 +7,7 @@ contract SimpleCentralizedArbitrator is Arbitrator {
     address public owner = msg.sender;
 
     struct Dispute {
-        Arbitrable arbitrated;
+        IArbitrable arbitrated;
         uint choices;
         uint ruling;
         DisputeStatus status;
@@ -25,13 +26,13 @@ contract SimpleCentralizedArbitrator is Arbitrator {
     function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
         super.createDispute(_choices, _extraData);
         disputeID = disputes.push(Dispute({
-          arbitrated: Arbitrable(msg.sender),
+          arbitrated: IArbitrable(msg.sender),
           choices: _choices,
           ruling: 0,
           status: DisputeStatus.Waiting
           })) -1;
 
-        emit DisputeCreation(disputeID, Arbitrable(msg.sender));
+        emit DisputeCreation(disputeID, IArbitrable(msg.sender));
     }
 
     function disputeStatus(uint _disputeID) public view returns(DisputeStatus status) {
