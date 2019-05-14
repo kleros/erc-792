@@ -56,6 +56,8 @@ contract SimpleEscrow is IArbitrable {
 
     function depositArbitrationFeeForPayee() public payable {
         require(!resolved, "Already resolved.");
+        require(!disputed, "There is a dispute.");
+        require(reclaimedAt > 0, "Payer didn't reclaim, nothing to dispute.");
         arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
     }
 

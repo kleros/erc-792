@@ -62,6 +62,8 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
 
     function depositArbitrationFeeForPayee() public payable {
         require(!resolved, "Already resolved.");
+        require(!disputed, "There is a dispute.");
+        require(reclaimedAt > 0, "Payer didn't reclaim, nothing to dispute.");
         uint disputeID = arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
         emit Dispute(arbitrator, disputeID, metaevidenceID, evidenceGroupID);
     }
