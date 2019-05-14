@@ -27,7 +27,7 @@ Let's return to ``SimpleEscrow`` and refactor it to implement ERC-1497 interface
 
   pragma solidity ^0.5.8;
 
-  import "../Arbitrable.sol";
+  import "../IArbitrable.sol";
   import "../Arbitrator.sol";
 
   contract SimpleEscrow is IArbitrable {
