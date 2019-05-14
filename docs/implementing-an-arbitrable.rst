@@ -95,7 +95,7 @@ If so, we update ``resolved`` and send the funds to ``payee``.
 Moving forward to second scenario:
 
 .. code-block:: javascript
-  :emphasize-lines: 18,19,21,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71
+  :emphasize-lines: 18,19,21,33,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71
 
   pragma solidity ^0.5.8;
   import "../IArbitrable.sol";
@@ -129,6 +129,7 @@ Moving forward to second scenario:
 
       function releaseFunds() public {
           require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
+          require(reclaimedAt == 0, "Payer reclaimed the funds.");
           require(!disputed, "There is a dispute.");
           require(!resolved, "Already resolved.");
 
@@ -172,6 +173,8 @@ Moving forward to second scenario:
 
 ``reclaimFunds`` function lets ``payer`` to reclaim their funds. After that we let ``payee`` to deposit arbitration fee to create a dispute for ``arbitrationFeeDepositPeriod``, otherwise ``payer`` can call ``reclaimFunds`` again to retrieve funds.
 In case if ``payee`` deposits arbitration fee in time a *dispute* gets created and the contract awaits arbitrators decision.
+
+Also we add an extra ``require`` in ``releaseFunds`` function to ensure funds can't be released if reclaimed.
 
 We define enforcement of rulings in ``rule`` function. Whoever wins the dispute should get the funds and should get reimbursed for arbitration fee.
 Recall that we took arbitration fee deposit from both sides and used one of them to pay for the arbitrator. Thus the balance of the contract is at least funds plus arbitration fee. Therefore we send ``address(this).balance`` to the winner. Lastly, we emit ``Ruling`` as required in the standard.
