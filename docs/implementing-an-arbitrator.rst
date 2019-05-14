@@ -12,6 +12,7 @@ Let's start by implementing cost functions:
 .. code-block:: javascript
 
   pragma solidity ^0.5.8;
+
   import "../Arbitrator.sol";
 
   contract SimpleCentralizedArbitrator is Arbitrator {
@@ -40,7 +41,7 @@ Next, we need a data structure to keep track of disputes:
   contract SimpleCentralizedArbitrator is Arbitrator {
 
       struct Dispute {
-          Arbitrable arbitrated;
+          IArbitrable arbitrated;
           uint choices;
           uint ruling;
           DisputeStatus status;
@@ -74,7 +75,7 @@ Next, we can implement the function for creating disputes:
   contract SimpleCentralizedArbitrator is Arbitrator {
 
       struct Dispute {
-          Arbitrable arbitrated;
+          IArbitrable arbitrated;
           uint choices;
           uint ruling;
           DisputeStatus status;
@@ -93,13 +94,13 @@ Next, we can implement the function for creating disputes:
       function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
           super.createDispute(_choices, _extraData);
           disputeID = disputes.push(Dispute({
-            arbitrated: Arbitrable(msg.sender),
+            arbitrated: IArbitrable(msg.sender),
             choices: _choices,
             ruling: 0,
             status: DisputeStatus.Waiting
             })) -1;
 
-          emit DisputeCreation(disputeID, Arbitrable(msg.sender));
+          emit DisputeCreation(disputeID, IArbitrable(msg.sender));
       }
   }
 
@@ -119,7 +120,7 @@ We also need to implement getters for ``status`` and ``ruling``:
   contract SimpleCentralizedArbitrator is Arbitrator {
 
       struct Dispute {
-          Arbitrable arbitrated;
+          IArbitrable arbitrated;
           uint choices;
           uint ruling;
           DisputeStatus status;
@@ -138,13 +139,13 @@ We also need to implement getters for ``status`` and ``ruling``:
       function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
           super.createDispute(_choices, _extraData);
           disputeID = disputes.push(Dispute({
-            arbitrated: Arbitrable(msg.sender),
+            arbitrated: IArbitrable(msg.sender),
             choices: _choices,
             ruling: 0,
             status: DisputeStatus.Waiting
             })) -1;
 
-          emit DisputeCreation(disputeID, Arbitrable(msg.sender));
+          emit DisputeCreation(disputeID, IArbitrable(msg.sender));
       }
 
       function disputeStatus(uint _disputeID) public view returns(DisputeStatus status) {
@@ -170,7 +171,7 @@ Finally, we need a proxy function to call ``rule`` function of the ``Arbitrable`
       address public owner = msg.sender;
 
       struct Dispute {
-          Arbitrable arbitrated;
+          IArbitrable arbitrated;
           uint choices;
           uint ruling;
           DisputeStatus status;
@@ -189,13 +190,13 @@ Finally, we need a proxy function to call ``rule`` function of the ``Arbitrable`
       function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
           super.createDispute(_choices, _extraData);
           disputeID = disputes.push(Dispute({
-            arbitrated: Arbitrable(msg.sender),
+            arbitrated: IArbitrable(msg.sender),
             choices: _choices,
             ruling: 0,
             status: DisputeStatus.Waiting
             })) -1;
 
-          emit DisputeCreation(disputeID, Arbitrable(msg.sender));
+          emit DisputeCreation(disputeID, IArbitrable(msg.sender));
       }
 
       function disputeStatus(uint _disputeID) public view returns(DisputeStatus status) {
@@ -220,7 +221,7 @@ Then the proxy function:
       address public owner = msg.sender;
 
       struct Dispute {
-          Arbitrable arbitrated;
+          IArbitrable arbitrated;
           uint choices;
           uint ruling;
           DisputeStatus status;
@@ -239,13 +240,13 @@ Then the proxy function:
       function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
           super.createDispute(_choices, _extraData);
           disputeID = disputes.push(Dispute({
-            arbitrated: Arbitrable(msg.sender),
+            arbitrated: IArbitrable(msg.sender),
             choices: _choices,
             ruling: 0,
             status: DisputeStatus.Waiting
             })) -1;
 
-          emit DisputeCreation(disputeID, Arbitrable(msg.sender));
+          emit DisputeCreation(disputeID, IArbitrable(msg.sender));
       }
 
       function disputeStatus(uint _disputeID) public view returns(DisputeStatus status) {
@@ -270,7 +271,7 @@ Then the proxy function:
           msg.sender.send(arbitrationCost(""));
           dispute.arbitrated.rule(_disputeID, _ruling);
       }
-      
+
   }
 
 First we check the caller address, we should only let the ``owner`` to execute this. Then we do sanity checks: Given ruling should be chosen among the ``choices`` and one should not be able to ``rule`` on an already solved dispute.
