@@ -1,5 +1,6 @@
 pragma solidity ^0.5.8;
-import "../Arbitrable.sol";
+
+import "../IArbitrable.sol";
 import "../Arbitrator.sol";
 
 contract SimpleEscrow is IArbitrable {
