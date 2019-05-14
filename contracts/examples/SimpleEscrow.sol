@@ -39,6 +39,7 @@ contract SimpleEscrow is IArbitrable {
 
     function reclaimFunds() public payable {
         require(!resolved, "Already resolved.");
+        require(!disputed, "There is a dispute.");
         require(msg.sender == payer, "Only the payer can reclaim the funds.");
 
         if(awaitingArbitrationFeeFromPayee){
