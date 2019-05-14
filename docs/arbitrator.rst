@@ -5,6 +5,10 @@ Arbitrator
 
 .. code-block:: javascript
 
+  pragma solidity ^0.5.8;
+
+  import "./IArbitrable.sol";
+
   contract Arbitrator {
 
       enum DisputeStatus {Waiting, Appealable, Solved}
@@ -19,18 +23,18 @@ Arbitrator
           _;
       }
 
-      event DisputeCreation(uint indexed _disputeID, Arbitrable indexed _arbitrable);
+      event DisputeCreation(uint indexed _disputeID, IArbitrable indexed _arbitrable);
 
-      event AppealPossible(uint indexed _disputeID, Arbitrable indexed _arbitrable);
+      event AppealPossible(uint indexed _disputeID, IArbitrable indexed _arbitrable);
 
-      event AppealDecision(uint indexed _disputeID, Arbitrable indexed _arbitrable);
+      event AppealDecision(uint indexed _disputeID, IArbitrable indexed _arbitrable);
 
       function createDispute(uint _choices, bytes memory _extraData) public requireArbitrationFee(_extraData) payable returns(uint disputeID) {}
 
       function arbitrationCost(bytes memory _extraData) public view returns(uint fee);
 
       function appeal(uint _disputeID, bytes memory _extraData) public requireAppealFee(_disputeID,_extraData) payable {
-          emit AppealDecision(_disputeID, Arbitrable(msg.sender));
+          emit AppealDecision(_disputeID, IArbitrable(msg.sender));
       }
 
       function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee);
@@ -40,7 +44,6 @@ Arbitrator
       function disputeStatus(uint _disputeID) public view returns(DisputeStatus status);
 
       function currentRuling(uint _disputeID) public view returns(uint ruling);
-
   }
 
 
