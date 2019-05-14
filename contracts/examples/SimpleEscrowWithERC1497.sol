@@ -53,7 +53,6 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
             resolved = true;
         }
         else{
-          require(msg.sender == payer, "Only the payer can reclaim the funds.");
           require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
           reclaimedAt = now;
           awaitingArbitrationFeeFromPayee = true;
