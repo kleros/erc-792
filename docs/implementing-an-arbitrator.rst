@@ -34,6 +34,7 @@ Next, we need a data structure to keep track of disputes:
   :emphasize-lines: 5,6,7,8,9,10,11,13
 
   pragma solidity ^0.5.8;
+
   import "../Arbitrator.sol";
 
   contract SimpleCentralizedArbitrator is Arbitrator {
@@ -67,6 +68,7 @@ Next, we can implement the function for creating disputes:
   :emphasize-lines: 23,24,25,26,27,28,29,30,32,33
 
   pragma solidity ^0.5.8;
+
   import "../Arbitrator.sol";
 
   contract SimpleCentralizedArbitrator is Arbitrator {
@@ -101,14 +103,17 @@ Next, we can implement the function for creating disputes:
       }
   }
 
-Recall that ``createDispute`` function from abstract ``Arbitrator`` contract: ``function createDispute(uint _choices, bytes memory _extraData) public requireArbitrationFee(_extraData) payable returns(uint disputeID) {}``. We, first execute ``super.createDispute(_choices, _extraData)`` to apply ``requireArbitrationFee`` modifier. So if caller of ``createDispute`` doesn't pass required amount of ether with the call, function will revert. Then, we create the dispute by pushing a new element to the array: ``disputes.push( ... )``. The ``push`` function returns resulting size of the array, thus we can use the return value of ``disputes.push( ... ) -1`` as ``disputeID``. Finally, we emit ``DisputeCreation`` as required in the standard.
+We, first execute ``super.createDispute(_choices, _extraData)`` to apply ``requireArbitrationFee`` modifier from ``Arbitrator`` contract. So if caller of ``createDispute`` doesn't pass required amount of ether with the call, function will revert. Then, we create the dispute by pushing a new element to the array: ``disputes.push( ... )``.
+The ``push`` function returns resulting size of the array, thus we can use the return value of ``disputes.push( ... ) -1`` as ``disputeID`` starting from zero.
+Finally, we emit ``DisputeCreation`` as required in the standard.
 
 We also need to implement getters for ``status`` and ``ruling``:
 
 .. code-block:: javascript
-  :emphasize-lines: 35,36,37,39,40,41
+  :emphasize-lines: 36,37,38,40,41,42
 
   pragma solidity ^0.5.8;
+
   import "../Arbitrator.sol";
 
   contract SimpleCentralizedArbitrator is Arbitrator {
@@ -154,7 +159,11 @@ We also need to implement getters for ``status`` and ``ruling``:
 Finally, we need a proxy function to call ``rule`` function of the ``Arbitrable`` contract. In this simple ``Arbitrator`` we will let one address to give rulings, the creator of the contract. So let's start by keeping track who created the contract:
 
 .. code-block:: javascript
-  :emphasize-lines: 3
+  :emphasize-lines: 7
+
+  pragma solidity ^0.5.8;
+
+  import "../Arbitrator.sol";
 
   contract SimpleCentralizedArbitrator is Arbitrator {
 
@@ -201,7 +210,7 @@ Finally, we need a proxy function to call ``rule`` function of the ``Arbitrable`
 Then the proxy function:
 
 .. code-block:: javascript
-  :emphasize-lines: 45,46,47,48,59,50,51,52,53,54,55,56,57,58,59,60
+  :emphasize-lines: 45,46,47,48,59,50,51,52,53,54,55,56,57,58
 
   pragma solidity ^0.5.8;
   import "../Arbitrator.sol";
@@ -261,6 +270,7 @@ Then the proxy function:
           msg.sender.send(arbitrationCost(""));
           dispute.arbitrated.rule(_disputeID, _ruling);
       }
+      
   }
 
 First we check the caller address, we should only let the ``owner`` to execute this. Then we do sanity checks: Given ruling should be chosen among the ``choices`` and one should not be able to ``rule`` on an already solved dispute.
