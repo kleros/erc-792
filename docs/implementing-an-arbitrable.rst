@@ -27,8 +27,6 @@ Let's start:
       string public agreement;
       uint public createdAt;
 
-      enum RulingOptions {PayerWins, PayeeWins, Count}
-
       constructor(address payable _payee, Arbitrator _arbitrator, string memory _agreement) public payable {
           value = msg.value;
           payee = _payee;
@@ -39,12 +37,12 @@ Let's start:
   }
 
 
-``payer`` deploys the contract depositing the payment amount and specifying ``payee`` address, ``arbitrator`` that it authorized to rule and ``agreement``. Notice ``payer = msg.sender``.
+``payer`` deploys the contract depositing the payment amount and specifying ``payee`` address, ``arbitrator`` that is authorized to rule and ``agreement`` string. Notice that ``payer = msg.sender``.
 
 There will be two scenarios:
  1. No dispute arises, ``payee`` withdraws the funds.
  2. ``payer`` reclaims funds by depositing arbitration fee...
-      a. ``payee`` fails to deposit arbitration fee in ``arbitrationFeeDepositPeriod`` and ``payer`` wins the dispute by default. Arbitration fee deposit refunded.
+      a. ``payee`` fails to deposit arbitration fee in ``arbitrationFeeDepositPeriod`` and ``payer`` wins by default. Arbitration fee deposit refunded.
       b. ``payee`` deposits arbitration fee in time. Dispute gets created. ``arbitrator`` rules. Winner gets the arbitration fee refunded.
 
 We made ``reclamationPeriod`` and ``arbitrationFeeDepositPeriod`` constant for sake of simplicity, they could be set by ``payer`` in the constructor too.
@@ -52,7 +50,7 @@ We made ``reclamationPeriod`` and ``arbitrationFeeDepositPeriod`` constant for s
 Let's implement the first scenario:
 
 .. code-block:: javascript
-  :emphasize-lines: 15,16,26,27,28,29,30,31,32,33
+  :emphasize-lines: 16,17,26,27,28,29,30,31,32,33
 
   pragma solidity ^0.5.8;
 
@@ -91,13 +89,13 @@ Let's implement the first scenario:
 
   }
 
-First we do sanity checks, ``reclamationPeriod`` should be passed, there shouldn't be a dispute and funds shouldn't be released already.
-Then we update ``fundsReleased`` and send the funds to ``payee``.
+First we do state checks, ``reclamationPeriod`` should be passed, there shouldn't be a dispute and funds shouldn't be released already.
+Then we update ``resolved`` and send the funds to ``payee``.
 
 Moving forward to second scenario:
 
 .. code-block:: javascript
-  :emphasize-lines: 18,19,21,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68
+  :emphasize-lines: 18,19,21,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71
 
   pragma solidity ^0.5.8;
   import "../IArbitrable.sol";
@@ -156,10 +154,13 @@ Moving forward to second scenario:
 
       function depositArbitrationFeeForPayee() public payable {
           require(!resolved, "Already resolved.");
+          require(!disputed, "There is a dispute.");
+          require(reclaimedAt > 0, "Payer didn't reclaim, nothing to dispute.");
           arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
       }
 
-      function executeRuling(uint _disputeID, uint _ruling) internal {
+      function rule(uint _disputeID, uint _ruling) public {
+          require(msg.sender == arbitrator, "Only the arbitrator can execute this.");
           require(!resolved, "Already resolved");
           require(disputed, "There should be dispute to execute a ruling.");
           resolved = true;
@@ -169,21 +170,11 @@ Moving forward to second scenario:
       }
   }
 
-``reclaimFunds`` function lets ``payer`` to reclaim their funds. After that we let ``payee`` to deposit arbitration fee to create a dispute, otherwise ``payer`` can call ``reclaimFunds`` again to retrieve funds.
-In case if ``payee`` deposits arbitration fee in time a *dispute* gets created. We define consequences of possible rulings inside ``executeRuling`` function. Whoever wins the dispute should get the funds and should get reimbursed for arbitration fee.
-Recall that we took arbitration fee deposit from both sides and used one of them to pay for the arbitrator. Thus the balance of the contract is at least funds plus arbitration fee. Therefore we send ``address(this).balance`` to the winner.
-Lastly, we emit ``Ruling`` as required in the standard.
+``reclaimFunds`` function lets ``payer`` to reclaim their funds. After that we let ``payee`` to deposit arbitration fee to create a dispute for ``arbitrationFeeDepositPeriod``, otherwise ``payer`` can call ``reclaimFunds`` again to retrieve funds.
+In case if ``payee`` deposits arbitration fee in time a *dispute* gets created and the contract awaits arbitrators decision.
 
-We define enforcement in ``executeRuling`` function. Notice that ``executeRuling`` is internal, so can't be called by the ``arbitrator`` directly. But recall the ``rule`` function from ``Arbitrable`` contract:
+We define enforcement of rulings in ``rule`` function. Whoever wins the dispute should get the funds and should get reimbursed for arbitration fee.
+Recall that we took arbitration fee deposit from both sides and used one of them to pay for the arbitrator. Thus the balance of the contract is at least funds plus arbitration fee. Therefore we send ``address(this).balance`` to the winner. Lastly, we emit ``Ruling`` as required in the standard.
 
-.. code-block:: javascript
-
-  function rule(uint _disputeID, uint _ruling) public onlyArbitrator {
-      emit Ruling(Arbitrator(msg.sender),_disputeID,_ruling);
-
-      executeRuling(_disputeID,_ruling);
-  }
-
-Instead, ``arbitrator`` should call ``rule`` function, which calls ``executeRuling`` function.
 
 That's it! We implemented a very simple escrow using ERC-792.
