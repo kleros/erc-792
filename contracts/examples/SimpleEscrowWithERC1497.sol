@@ -68,7 +68,8 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
         emit Dispute(arbitrator, disputeID, metaevidenceID, evidenceGroupID);
     }
 
-    function executeRuling(uint _disputeID, uint _ruling) internal {
+    function rule(uint _disputeID, uint _ruling) public {
+        require(msg.sender == address(arbitrator), "Only the arbitrator can execute this.");
         require(!resolved, "Already resolved");
         require(disputed, "There should be dispute to execute a ruling.");
         resolved = true;
