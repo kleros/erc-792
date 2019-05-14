@@ -4,6 +4,9 @@ ERC-1497: Evidence Standard
 
 .. note:: For complete specification of the standard you can read the original proposal `here <https://github.com/ethereum/EIPs/issues/1497>`_.
 
+.. warning::
+  Smart contracts in this tutorial are not intended for production but educational purposes. Beware of using them on main network.
+
 In ``SimpleEscrow`` contract, we used a ``string`` to store the agreement between parties. Deployer could format the file anyway they like.
 There are many ways to signal the information about the agreement but a standard way would allow interoperability.
 
