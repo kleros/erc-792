@@ -50,7 +50,7 @@ We made ``reclamationPeriod`` and ``arbitrationFeeDepositPeriod`` constant for s
 Let's implement the first scenario:
 
 .. code-block:: javascript
-  :emphasize-lines: 16,17,26,27,28,29,30,31,32,33
+  :emphasize-lines: 16,17,26,27,28,29,30,31,32,33,34
 
   pragma solidity ^0.5.8;
 
@@ -89,8 +89,8 @@ Let's implement the first scenario:
 
   }
 
-First we do state checks, ``reclamationPeriod`` should be passed, there shouldn't be a dispute and funds shouldn't be released already.
-Then we update ``resolved`` and send the funds to ``payee``.
+In ``releaseFunds`` function, first we do state checks, ``reclamationPeriod`` should be passed, there shouldn't be a dispute and funds shouldn't be released already.
+If so, we update ``resolved`` and send the funds to ``payee``.
 
 Moving forward to second scenario:
 
