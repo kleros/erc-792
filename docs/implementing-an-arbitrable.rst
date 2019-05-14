@@ -13,6 +13,7 @@ Let's start:
 .. code-block:: javascript
 
   pragma solidity ^0.5.8;
+
   import "../Arbitrable.sol";
   import "../Arbitrator.sol";
 
@@ -38,8 +39,9 @@ Let's start:
   }
 
 
-``payer`` deploys the contract depositing the payment amount, specifying ``payee`` address, ``agreement`` and the ``reclamationPeriod`` during when ``payer`` can reclaim their deposit.
-So there will be three scenarios:
+``payer`` deploys the contract depositing the payment amount and specifying ``payee`` address, ``arbitrator`` that it authorized to rule and ``agreement``. Notice ``payer = msg.sender``.
+
+There will be two scenarios:
  1. No dispute arises, ``payee`` withdraws the funds.
  2. ``payer`` reclaims funds by depositing arbitration fee...
       a. ``payee`` fails to deposit arbitration fee in ``arbitrationFeeDepositPeriod`` and ``payer`` wins the dispute by default. Arbitration fee deposit refunded.
@@ -50,7 +52,7 @@ We made ``reclamationPeriod`` and ``arbitrationFeeDepositPeriod`` constant for s
 Let's implement the first scenario:
 
 .. code-block:: javascript
-  :emphasize-lines: 15,16,27,28,29,30,31,32,33,34
+  :emphasize-lines: 15,16,26,27,28,29,30,31,32,33,34
 
   pragma solidity ^0.5.8;
   import "../IArbitrable.sol";
@@ -145,7 +147,6 @@ Moving forward to second scenario:
               resolved = true;
           }
           else{
-            require(msg.sender == payer, "Only the payer can reclaim the funds.");
             require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
             reclaimedAt = now;
             awaitingArbitrationFeeFromPayee = true;
@@ -169,10 +170,10 @@ Moving forward to second scenario:
 
 ``reclaimFunds`` function lets ``payer`` to reclaim their funds. After that we let ``payee`` to deposit arbitration fee to create a dispute, otherwise ``payer`` can call ``reclaimFunds`` again to retrieve funds.
 In case if ``payee`` deposits arbitration fee in time a *dispute* gets created. We define consequences of possible rulings inside ``executeRuling`` function. Whoever wins the dispute should get the funds and should get reimbursed for arbitration fee.
-Recall that we took arbitration fee deposit from both sides and used one of to pay for the arbitrator. Thus the balance of the contract is at least funds plus arbitration fee. Therefore we send ``address(this).balance`` to the winner.
+Recall that we took arbitration fee deposit from both sides and used one of them to pay for the arbitrator. Thus the balance of the contract is at least funds plus arbitration fee. Therefore we send ``address(this).balance`` to the winner.
 Lastly, we emit ``Ruling`` as required in the standard.
 
-Notice that ``executeRuling`` is internal, so can't be called by the ``arbitrator`` directly. But recall the ``rule`` function from ``Arbitrable`` contract:
+We define enforcement in ``executeRuling`` function. Notice that ``executeRuling`` is internal, so can't be called by the ``arbitrator`` directly. But recall the ``rule`` function from ``Arbitrable`` contract:
 
 .. code-block:: javascript
 
