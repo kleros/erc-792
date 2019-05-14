@@ -53,7 +53,7 @@ Let's implement the first scenario:
   :emphasize-lines: 15,16,27,28,29,30,31,32,33,34
 
   pragma solidity ^0.5.8;
-  import "../Arbitrable.sol";
+  import "../IArbitrable.sol";
   import "../Arbitrator.sol";
 
   contract SimpleEscrow is IArbitrable {
@@ -97,7 +97,7 @@ Moving forward to second scenario:
   :emphasize-lines: 18,19,21,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68
 
   pragma solidity ^0.5.8;
-  import "../Arbitrable.sol";
+  import "../IArbitrable.sol";
   import "../Arbitrator.sol";
 
   contract SimpleEscrow is IArbitrable {
