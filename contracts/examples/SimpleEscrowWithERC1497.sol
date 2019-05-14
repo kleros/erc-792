@@ -35,8 +35,8 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     }
 
     function releaseFunds() public {
-        require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
         require(reclaimedAt == 0, "Payer reclaimed the funds.");
+        require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
         require(!disputed, "There is a dispute.");
         require(!resolved, "Already resolved.");
 
