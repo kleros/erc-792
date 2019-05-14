@@ -12,13 +12,11 @@ Arbitrator
       modifier requireArbitrationFee(bytes memory _extraData) {
           require(msg.value >= arbitrationCost(_extraData), "Not enough ETH to cover arbitration costs.");
           _;
-
       }
 
       modifier requireAppealFee(uint _disputeID, bytes memory _extraData) {
           require(msg.value >= appealCost(_disputeID, _extraData), "Not enough ETH to cover appeal costs.");
           _;
-
       }
 
       event DisputeCreation(uint indexed _disputeID, Arbitrable indexed _arbitrable);
@@ -33,7 +31,6 @@ Arbitrator
 
       function appeal(uint _disputeID, bytes memory _extraData) public requireAppealFee(_disputeID,_extraData) payable {
           emit AppealDecision(_disputeID, Arbitrable(msg.sender));
-
       }
 
       function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee);
