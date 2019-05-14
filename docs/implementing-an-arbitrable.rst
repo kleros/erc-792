@@ -55,6 +55,7 @@ Let's implement the first scenario:
   :emphasize-lines: 15,16,26,27,28,29,30,31,32,33
 
   pragma solidity ^0.5.8;
+  
   import "../IArbitrable.sol";
   import "../Arbitrator.sol";
 
