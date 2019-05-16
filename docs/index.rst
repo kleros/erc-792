@@ -11,7 +11,7 @@ ERC-792: Arbitration Standard
    implementing-an-arbitrable
    implementing-an-arbitrator
    erc-1497
-   dapp-example
+   a-simple-dapp
 
 
 Indices and tables
