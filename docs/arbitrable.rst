@@ -4,6 +4,10 @@ Arbitrable
 
 .. code-block:: javascript
 
+  pragma solidity ^0.5.8;
+
+  import "./Arbitrator";
+
   interface IArbitrable {
 
       function rule(uint _disputeID, uint _ruling) external;
