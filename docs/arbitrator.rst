@@ -50,11 +50,12 @@ Arbitrator
 Dispute Status
 ##############
 
-*Disputes* has three statuses: ``Waiting`` , ``Appealable`` and ``Solved``:
+There are three statuses that function ``disputeStatus`` can return; ``Waiting``, ``Appealable`` and ``Solved``:
+
 
 * A *dispute* is in ``Waiting`` state when it arises (get's created, by ``createDispute`` function).
 
-* Is in ``Appealable`` state when it got a *ruling* and if the ``Arbitrator`` lets to appeal a *ruling*. When the ``Arbitrator`` lets to appeal, often it gives a time period to do so, after that the dispute will no longer be ``Appealable`` but ``Solved``.
+* Is in ``Appealable`` state when it got a *ruling* and the ``Arbitrator`` allows to *appeal* it. When the ``Arbitrator`` allows to appeal, often it gives a time period to do so. If a dispute is not appealed within that time, ``disputeStatus`` should return ``Solved``.
 
 * Is in ``Solved`` state when it got a *ruling* and the *ruling* is final. Note that this doesn't imply ``rule`` function on the ``Arbitrable`` has been called to enforce (execute) the *ruling*. It means the decision on the *dispute* is final and to be executed.
 
@@ -88,4 +89,4 @@ And seven functions:
 
 * ``disputeStatus`` should return the status of dispute; ``Waiting``, ``Appealable`` or ``Solved``.
 
-* ``currentRuling`` should return the ruling which will be given if there is no appeal or which has been given.
+* ``currentRuling`` should return the current ruling (executed or not, appealed or not) of a dispute.
