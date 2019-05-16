@@ -5,8 +5,8 @@ Implementing an Arbitrable
 .. warning::
   Smart contracts in this tutorial are not intended for production but educational purposes. Beware of using them on main network.
 
-Consider a case where two party trades ether for goods. Payer wants to pay only if payee provides promised goods. So payer deposits payment amount into an escrow and if a dispute arise an arbitrator will resolve it.
-For sake of simplicity, we won't implement appealing functionality.
+Consider a case where two parties trade ether for goods. Payer wants to pay only if payee provides promised goods. So payer deposits payment amount into an escrow and if a dispute arises an arbitrator will resolve it.
+For sake of simplicity, we won't implement appeal functionality.
 
 Let's start:
 
@@ -128,10 +128,9 @@ Moving forward to second scenario:
       }
 
       function releaseFunds() public {
+          require(!resolved, "Already resolved.");
           require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
           require(reclaimedAt == 0, "Payer reclaimed the funds.");
-          require(!disputed, "There is a dispute.");
-          require(!resolved, "Already resolved.");
 
           resolved = true;
           payee.send(value);
@@ -139,11 +138,12 @@ Moving forward to second scenario:
 
       function reclaimFunds() public payable {
           require(!resolved, "Already resolved.");
+          require(!disputed, "There is a dispute.");
           require(msg.sender == payer, "Only the payer can reclaim the funds.");
 
           if(awaitingArbitrationFeeFromPayee){
               require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
-              payer.send(value);
+              payer.send(address(this).balance);
               resolved = true;
           }
           else{
@@ -166,14 +166,14 @@ Moving forward to second scenario:
           require(!resolved, "Already resolved");
           require(disputed, "There should be dispute to execute a ruling.");
           resolved = true;
-          if(_ruling == uint(RulingOptions.PayeeWins)) payer.send(address(this).balance);
+          if(_ruling == uint(RulingOptions.PayerWins)) payer.send(address(this).balance);
           else payee.send(address(this).balance);
           emit Ruling(arbitrator, _disputeID, _ruling);
       }
   }
 
 ``reclaimFunds`` function lets ``payer`` to reclaim their funds. After that we let ``payee`` to deposit arbitration fee to create a dispute for ``arbitrationFeeDepositPeriod``, otherwise ``payer`` can call ``reclaimFunds`` again to retrieve funds.
-In case if ``payee`` deposits arbitration fee in time a *dispute* gets created and the contract awaits arbitrators decision.
+In case if ``payee`` deposits arbitration fee in time a *dispute* gets created and the contract awaits arbitrator's decision.
 
 Also we add an extra ``require`` in ``releaseFunds`` function to ensure funds can't be released if reclaimed.
 
