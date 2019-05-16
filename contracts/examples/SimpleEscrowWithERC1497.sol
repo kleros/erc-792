@@ -35,10 +35,9 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     }
 
     function releaseFunds() public {
+        require(!resolved, "Already resolved.");
         require(reclaimedAt == 0, "Payer reclaimed the funds.");
         require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
-        require(!disputed, "There is a dispute.");
-        require(!resolved, "Already resolved.");
 
         resolved = true;
         payee.send(value);
@@ -51,7 +50,7 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
 
         if(awaitingArbitrationFeeFromPayee){
             require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
-            payer.send(value);
+            payer.send(address(this).balance);
             resolved = true;
         }
         else{
