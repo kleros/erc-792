@@ -66,7 +66,7 @@ Finally, each dispute will have a status, and we store it inside ``status`` fiel
 Next, we can implement the function for creating disputes:
 
 .. code-block:: javascript
-  :emphasize-lines: 23,24,25,26,27,28,29,30,32,33
+  :emphasize-lines: 23,24,25,26,27,28,29,30,31,32,33,34
 
   pragma solidity ^0.5.8;
 
