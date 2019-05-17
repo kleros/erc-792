@@ -214,6 +214,7 @@ Then the proxy function:
   :emphasize-lines: 45,46,47,48,59,50,51,52,53,54,55,56,57,58
 
   pragma solidity ^0.5.8;
+
   import "../Arbitrator.sol";
 
   contract SimpleCentralizedArbitrator is Arbitrator {
