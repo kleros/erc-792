@@ -198,7 +198,7 @@ Now, first lets's implement `IEvidence`:
 And then, we will get rid of ``string agreement``. Instead we need a ``string metaevidence`` and have to emit ``MetaEvidence``.
 
 .. code-block:: javascript
-  :emphasize-lines: 24,26,31,32
+  :emphasize-lines: 24,26,32
 
   pragma solidity ^0.5.8;
 
