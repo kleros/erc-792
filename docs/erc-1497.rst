@@ -17,9 +17,9 @@ Meta-evidence is the information about the dispute itself: Agreement, parties in
 
 ERC-1497 brings three new events: MetaEvidence, Evidence and Dispute.
 
-* ``event MetaEvidence(uint indexed _metaEvidenceID, string _evidence)`` provides the context of the dispute, the question the arbitrators have to answer, the human readable meanings of rulings and specific modes of display for evidence. We use ``_metaEvidenceID`` to uniquely identify a metaevidence. This is necessary when there are multiple metaevidence usecases. ``_evidence`` contains the URI for metaevidence JSON file.
-* ``event Evidence(Arbitrator indexed _arbitrator, uint indexed _evidenceGroupID, address indexed _party, string _evidence)`` links a piece of evidence with an arbitrator, sending party and a dispute.
-* ``event Dispute(Arbitrator indexed _arbitrator, uint indexed _disputeID, uint _metaEvidenceID, uint _evidenceGroupID)``  is raised when a dispute is created to link the proper meta-evidence and evidence group to the dispute. The event includes a reference to the arbitrator, a unique identifier for the dispute itself, the identifier used to look up the meta-evidence event log and the identifier of the evidence group that can be used to look up all evidence submitted in the grouping.
+* ``event MetaEvidence`` provides the context of the dispute, the question the arbitrators have to answer, the human readable meanings of rulings and specific modes of display for evidence. We use ``_metaEvidenceID`` to uniquely identify a metaevidence. This is necessary when there are multiple metaevidence usecases. ``_evidence`` contains the URI for metaevidence JSON file.
+* ``event Evidence`` links a piece of evidence with an arbitrator, sending party and a dispute.
+* ``event Dispute``  is raised when a dispute is created to link the proper meta-evidence and evidence group to the dispute. The event includes a reference to the arbitrator, a unique identifier for the dispute itself, the identifier used to look up the meta-evidence event log and the identifier of the evidence group that can be used to look up all evidence submitted in the grouping.
 
 Let's return to ``SimpleEscrow`` and refactor it to implement ERC-1497 interface. Recall ``SimpleEscrow``:
 
