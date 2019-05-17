@@ -32,7 +32,7 @@ So in practice, we disabled appealing, for simplicity. We did implement neither 
 Next, we need a data structure to keep track of disputes:
 
 .. code-block:: javascript
-  :emphasize-lines: 5,6,7,8,9,10,11,12,14
+  :emphasize-lines: 7,8,9,10,11,12,14
 
   pragma solidity ^0.5.8;
 
