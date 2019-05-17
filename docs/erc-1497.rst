@@ -35,8 +35,8 @@ Let's return to ``SimpleEscrow`` and refactor it to implement ERC-1497 interface
       address payable public payee;
       uint public value;
       Arbitrator public arbitrator;
-      uint constant public reclamationPeriod = 3 days;
-      uint constant public arbitrationFeeDepositPeriod = 3 days;
+      uint constant public reclamationPeriod = 3 minutes;
+      uint constant public arbitrationFeeDepositPeriod = 3 minutes;
       string public agreement;
       uint public createdAt;
 
@@ -57,9 +57,9 @@ Let's return to ``SimpleEscrow`` and refactor it to implement ERC-1497 interface
       }
 
       function releaseFunds() public {
-          require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
-          require(!disputed, "There is a dispute.");
           require(!resolved, "Already resolved.");
+          require(reclaimedAt == 0, "Payer reclaimed the funds.");
+          require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
 
           resolved = true;
           payee.send(value);
@@ -67,15 +67,15 @@ Let's return to ``SimpleEscrow`` and refactor it to implement ERC-1497 interface
 
       function reclaimFunds() public payable {
           require(!resolved, "Already resolved.");
+          require(!disputed, "There is a dispute.");
           require(msg.sender == payer, "Only the payer can reclaim the funds.");
 
           if(awaitingArbitrationFeeFromPayee){
               require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
-              payer.send(value);
+              payer.send(address(this).balance);
               resolved = true;
           }
           else{
-            require(msg.sender == payer, "Only the payer can reclaim the funds.");
             require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
             reclaimedAt = now;
             awaitingArbitrationFeeFromPayee = true;
@@ -84,14 +84,18 @@ Let's return to ``SimpleEscrow`` and refactor it to implement ERC-1497 interface
 
       function depositArbitrationFeeForPayee() public payable {
           require(!resolved, "Already resolved.");
+          require(!disputed, "There is a dispute.");
+          require(reclaimedAt > 0, "Payer didn't reclaim, nothing to dispute.");
           arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
+          disputed = true;
       }
 
-      function executeRuling(uint _disputeID, uint _ruling) internal {
+      function rule(uint _disputeID, uint _ruling) public {
+          require(msg.sender == address(arbitrator), "Only the arbitrator can execute this.");
           require(!resolved, "Already resolved");
           require(disputed, "There should be dispute to execute a ruling.");
           resolved = true;
-          if(_ruling == uint(RulingOptions.PayeeWins)) payer.send(address(this).balance);
+          if(_ruling == uint(RulingOptions.PayerWins)) payer.send(address(this).balance);
           else payee.send(address(this).balance);
           emit Ruling(arbitrator, _disputeID, _ruling);
       }
