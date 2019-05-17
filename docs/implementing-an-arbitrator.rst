@@ -211,7 +211,7 @@ Finally, we need a proxy function to call ``rule`` function of the ``Arbitrable`
 Then the proxy function:
 
 .. code-block:: javascript
-  :emphasize-lines: 45,46,47,48,59,50,51,52,53,54,55,56,57,58
+  :emphasize-lines: 46,47,48,49,50,51,52,53,54,55,56,57,58,59
 
   pragma solidity ^0.5.8;
 
