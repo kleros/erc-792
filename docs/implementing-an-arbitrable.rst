@@ -6,7 +6,6 @@ Implementing an Arbitrable
   Smart contracts in this tutorial are not intended for production but educational purposes. Beware of using them on main network.
 
 Consider a case where two parties trade ether for goods. Payer wants to pay only if payee provides promised goods. So payer deposits payment amount into an escrow and if a dispute arises an arbitrator will resolve it.
-For sake of simplicity, we won't implement appeal functionality.
 
 Let's start:
 
