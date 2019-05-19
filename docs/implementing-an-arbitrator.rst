@@ -22,7 +22,7 @@ Let's start by implementing cost functions:
       }
 
       function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee){
-          fee = 2^250 ether; // An unaffordable amount which practically avoids appeals.
+          fee = 2**250; // An unaffordable amount which practically avoids appeals.
       }
   }
 
@@ -54,7 +54,7 @@ Next, we need a data structure to keep track of disputes:
       }
 
       function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee){
-          fee = 2^250 ether; // An unaffordable amount which practically avoids appeals.
+          fee = 2**250; // An unaffordable amount which practically avoids appeals.
       }
   }
 
@@ -88,7 +88,7 @@ Next, we can implement the function for creating disputes:
       }
 
       function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee){
-          fee = 2^250 ether; // An unaffordable amount which practically avoids appeals.
+          fee = 2**250 ether; // An unaffordable amount which practically avoids appeals.
       }
 
       function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
@@ -133,7 +133,7 @@ We also need to implement getters for ``status`` and ``ruling``:
       }
 
       function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee) {
-          fee = 2^250 ether; // An unaffordable amount which practically avoids appeals.
+          fee = 2**250; // An unaffordable amount which practically avoids appeals.
       }
 
       function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
@@ -184,7 +184,7 @@ Finally, we need a proxy function to call ``rule`` function of the ``Arbitrable`
       }
 
       function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee) {
-          fee = 2^250 ether; // An unaffordable amount which practically avoids appeals.
+          fee = 2**250 ether; // An unaffordable amount which practically avoids appeals.
       }
 
       function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
@@ -235,7 +235,7 @@ Then the proxy function:
       }
 
       function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee) {
-          fee = 2^250 ether; // An unaffordable amount which practically avoids appeals.
+          fee = 2**250 ether; // An unaffordable amount which practically avoids appeals.
       }
 
       function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
