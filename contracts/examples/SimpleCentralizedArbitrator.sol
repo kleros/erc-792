@@ -20,7 +20,7 @@ contract SimpleCentralizedArbitrator is Arbitrator {
     }
 
     function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee) {
-        fee = 2^250 ether; // An unaffordable amount which practically avoids appeals.
+        fee = 2**250; // An unaffordable amount which practically avoids appeals.
     }
 
     function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
