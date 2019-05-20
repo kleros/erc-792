@@ -4,7 +4,7 @@
  *  Bug Bounties: This code hasn't undertaken a bug bounty program yet.
  */
 
-pragma solidity ^0.5.8;
+pragma solidity ^0.5;
 
 import "./Arbitrator.sol";
 
