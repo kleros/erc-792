@@ -43,52 +43,10 @@ export const createdAt = instanceAddress =>
 
 export const remainingTimeToReclaim = instanceAddress =>
   contractInstance(instanceAddress)
-    .methods.createdAt()
+    .methods.remainingTimeToReclaim()
     .call()
 
 export const remainingTimeToDepositArbitrationFee = instanceAddress =>
   contractInstance(instanceAddress)
     .methods.remainingTimeToDepositArbitrationFee()
     .call()
-
-// export const getArbitrationCost = async (arbitratorInstance, extraData) =>
-//   arbitratorInstance.methods
-//     .arbitrationCost(web3.utils.utf8ToHex(extraData))
-//     .call()
-//
-// export const setArbitrationPrice = async (
-//   account,
-//   arbitratorInstance,
-//   arbitrationPrice
-// ) =>
-//   arbitratorInstance.methods
-//     .setArbitrationPrice(arbitrationPrice)
-//     .send({ from: account })
-//
-// export const getDispute = async (arbitratorInstance, index) =>
-//   arbitratorInstance.methods.disputes(index).call()
-//
-// export const getDisputeStatus = async (arbitratorInstance, index) =>
-//   arbitratorInstance.methods.disputeStatus(index).call()
-//
-// export const giveRuling = async (
-//   account,
-//   arbitratorInstance,
-//   disputeID,
-//   ruling
-// ) =>
-//   arbitratorInstance.methods
-//     .giveRuling(disputeID, ruling)
-//     .send({ from: account })
-//
-// export const giveAppealableRuling = async (
-//   account,
-//   arbitratorInstance,
-//   disputeID,
-//   ruling,
-//   appealCost,
-//   timeToAppeal
-// ) =>
-//   arbitratorInstance.methods
-//     .giveAppelableRuling(disputeID, ruling, appealCost, timeToAppeal)
-//     .send({ from: account })
