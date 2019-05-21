@@ -72,4 +72,12 @@ contract SimpleEscrow is IArbitrable {
         else payee.send(address(this).balance);
         emit Ruling(arbitrator, _disputeID, _ruling);
     }
+
+    function remainingTimeToReclaim() public view returns (uint) {
+        return createdAt + reclamationPeriod - now;
+    }
+
+    function remainingTimeToDepositArbitrationFee() public view returns (uint) {
+        return reclaimedAt + arbitrationFeeDepositPeriod - now;
+    }
 }

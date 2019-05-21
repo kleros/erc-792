@@ -83,4 +83,12 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
         require(msg.sender == payer || msg.sender == payee, "Third parties are not allowed to submit evidence.");
         emit Evidence(arbitrator, evidenceGroupID, msg.sender, _evidence);
     }
+
+    function remainingTimeToReclaim() public view returns (uint) {
+        return createdAt + reclamationPeriod - now;
+    }
+
+    function remainingTimeToDepositArbitrationFee() public view returns (uint) {
+        return reclaimedAt + arbitrationFeeDepositPeriod - now;
+    }
 }
