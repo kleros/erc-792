@@ -12,9 +12,12 @@
     "truffle": "^5.0.15"
   },
   "dependencies": {
+    "bootstrap": "^4.3.1",
     "react": "^16.8.6",
+    "react-bootstrap": "^1.0.0-beta.8",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "web3": "1.0.0-beta.37"
   },
   "scripts": {
     "start": "react-scripts start",
