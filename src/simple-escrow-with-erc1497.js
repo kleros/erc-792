@@ -11,20 +11,31 @@ export const deploy = (payer, payee, amount, arbitrator, metaevidence) =>
 
 export const contractInstance = address => {
   let instance = new web3.eth.Contract(SimpleEscrowWithERC1497.abi, address)
-  instance.options.address = '0x575Cf3cf95F063b678580D5338829194C55Df6F0'
+  console.log('utility')
+  console.log(address)
+  instance.options.address = address
 
   return instance
 }
 
-export const reclaimFunds = async (senderAddress, instanceAddress) =>
+export const reclaimFunds = (senderAddress, instanceAddress, value) =>
   contractInstance(instanceAddress)
     .methods.reclaimFunds()
-    .send({ from: senderAddress })
+    .send({ from: senderAddress, value })
 
-export const releaseFunds = async (senderAddress, instanceAddress) =>
+export const releaseFunds = (senderAddress, instanceAddress) =>
   contractInstance(instanceAddress)
     .methods.releaseFunds()
     .send({ from: senderAddress })
+
+export const depositArbitrationFeeForPayee = (
+  senderAddress,
+  instanceAddress,
+  value
+) =>
+  contractInstance(instanceAddress)
+    .methods.depositArbitrationFeeForPayee()
+    .send({ from: senderAddress, value })
 
 export const reclamationPeriod = instanceAddress =>
   contractInstance(instanceAddress)
@@ -50,3 +61,23 @@ export const remainingTimeToDepositArbitrationFee = instanceAddress =>
   contractInstance(instanceAddress)
     .methods.remainingTimeToDepositArbitrationFee()
     .call()
+
+export const arbitrator = instanceAddress =>
+  contractInstance(instanceAddress)
+    .methods.arbitrator()
+    .call()
+
+export const status = instanceAddress =>
+  contractInstance(instanceAddress)
+    .methods.status()
+    .call()
+
+export const value = instanceAddress =>
+  contractInstance(instanceAddress)
+    .methods.value()
+    .call()
+
+export const submitEvidence = (instanceAddress, senderAddress, evidence) =>
+  contractInstance(instanceAddress)
+    .methods.submitEvidence(evidence)
+    .send({ from: senderAddress })

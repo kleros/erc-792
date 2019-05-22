@@ -1,7 +1,7 @@
-export default ({ payer, payee, amount, title, description }) => ({
+export default (payer, payee, amount, title, description) => ({
   category: 'Escrow',
-  title,
-  description,
+  title: title,
+  description: description,
   question: 'Does payer deserves to be refunded?',
   rulingOptions: {
     type: 'single-select',
