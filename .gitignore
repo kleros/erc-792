@@ -7,7 +7,7 @@
 /build/
 
 # Docs
-/livehtml/
+/docs/livehtml/
 /docs/build/
 
 # Logs
