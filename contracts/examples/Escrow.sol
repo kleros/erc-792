@@ -6,6 +6,7 @@ import "../erc-1497/IEvidence.sol";
 
 contract Escrow is IArbitrable, IEvidence {
 
+    enum Status {Initial, Reclaimed, Disputed, Resolved}
     enum RulingOptions {PayerWins, PayeeWins, Count}
 
     constructor() public {
@@ -15,11 +16,9 @@ contract Escrow is IArbitrable, IEvidence {
         address payable payer;
         address payable payee;
         Arbitrator arbitrator;
+        Status status;
         uint value;
-        bool disputed;
         uint disputeID;
-        bool resolved;
-        bool awaitingArbitrationFeeFromPayee;
         uint createdAt;
         uint reclaimedAt;
         uint payerFeeDeposit;
@@ -38,11 +37,9 @@ contract Escrow is IArbitrable, IEvidence {
             payer: msg.sender,
             payee: _payee,
             arbitrator: _arbitrator,
+            status: Status.Initial,
             value: msg.value,
-            disputed: false,
             disputeID: 0,
-            resolved: false,
-            awaitingArbitrationFeeFromPayee: false,
             createdAt: now,
             reclaimedAt: 0,
             payerFeeDeposit: 0,
@@ -55,42 +52,40 @@ contract Escrow is IArbitrable, IEvidence {
     function releaseFunds(uint _txID) public {
         TX storage tx = txs[_txID];
 
-        require(!tx.resolved, "Already resolved.");
-        require(tx.reclaimedAt == 0, "Payer reclaimed the funds.");
-        require(now - tx.createdAt > tx.reclamationPeriod, "Payer still has time to reclaim.");
+        require(tx.status == Status.Initial, "Transaction is not in initial status.");
+        if(msg.sender != tx.payer)
+          require(now - tx.createdAt > tx.reclamationPeriod, "Payer still has time to reclaim.");
 
-        tx.resolved = true;
+        tx.status = Status.Resolved;
         tx.payee.send(tx.value);
     }
 
     function reclaimFunds(uint _txID) public payable {
         TX storage tx = txs[_txID];
 
-        require(!tx.resolved, "Already resolved.");
-        require(!tx.disputed, "There is a dispute.");
+        require(tx.status == Status.Initial || tx.status == Status.Reclaimed, "Status should be initial or reclaimed.");
         require(msg.sender == tx.payer, "Only the payer can reclaim the funds.");
 
-        if(tx.awaitingArbitrationFeeFromPayee){
+        if(tx.status == Status.Reclaimed){
             require(now - tx.reclaimedAt > tx.arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
             tx.payer.send(tx.value + tx.payerFeeDeposit);
-            tx.resolved = true;
+            tx.status = Status.Resolved;
         }
         else{
+          require(now - tx.createdAt < tx.reclamationPeriod, "Reclamation period ended.");
           require(msg.value == tx.arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
           tx.reclaimedAt = now;
-          tx.awaitingArbitrationFeeFromPayee = true;
+          tx.status = Status.Reclaimed;
         }
     }
 
     function depositArbitrationFeeForPayee(uint _txID) public payable {
         TX storage tx = txs[_txID];
 
+        require(tx.status == Status.Reclaimed, "Payer didn't reclaim, nothing to dispute.");
 
-        require(!tx.resolved, "Already resolved.");
-        require(!tx.disputed, "There is a dispute.");
-        require(tx.reclaimedAt > 0, "Payer didn't reclaim, nothing to dispute.");
         tx.disputeID = tx.arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
-        tx.disputed = true;
+        tx.status = Status.Disputed;
         disputeIDtoTXID[tx.disputeID] = _txID;
         emit Dispute(tx.arbitrator, tx.disputeID, _txID, _txID);
     }
@@ -100,10 +95,8 @@ contract Escrow is IArbitrable, IEvidence {
         TX storage tx = txs[txID];
 
         require(msg.sender == address(tx.arbitrator), "Only the arbitrator can execute this.");
-        require(!tx.resolved, "Already resolved");
-        require(tx.disputed, "There should be dispute to execute a ruling.");
-
-        tx.resolved = true;
+        require(tx.status == Status.Disputed, "There should be dispute to execute a ruling.");
+        tx.status = Status.Resolved;
 
         if(_ruling == uint(RulingOptions.PayerWins)) tx.payer.send(tx.value + tx.payerFeeDeposit);
         else tx.payee.send(tx.value + tx.payeeFeeDeposit);
@@ -114,7 +107,7 @@ contract Escrow is IArbitrable, IEvidence {
     function submitEvidence(uint _txID, string memory _evidence) public {
         TX storage tx = txs[_txID];
 
-        require(!tx.resolved);
+        require(tx.status != Status.Resolved);
         require(msg.sender == tx.payer || msg.sender == tx.payee, "Third parties are not allowed to submit evidence.");
 
         emit Evidence(tx.arbitrator, _txID, msg.sender, _evidence);

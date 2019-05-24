@@ -11,13 +11,12 @@ contract SimpleEscrow is IArbitrable {
     uint constant public reclamationPeriod = 3 minutes;
     uint constant public arbitrationFeeDepositPeriod = 3 minutes;
     string public agreement;
+
     uint public createdAt;
-
-    bool public disputed;
-    bool public resolved;
-
-    bool public awaitingArbitrationFeeFromPayee;
     uint public reclaimedAt;
+
+    enum Status {Initial, Reclaimed, Disputed, Resolved}
+    Status public status;
 
     enum RulingOptions {PayerWins, PayeeWins, Count}
 
@@ -30,44 +29,42 @@ contract SimpleEscrow is IArbitrable {
     }
 
     function releaseFunds() public {
-        require(!resolved, "Already resolved.");
-        require(reclaimedAt == 0, "Payer reclaimed the funds.");
-        require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
+      require(status == Status.Initial, "Transaction is not in initial status.");
 
-        resolved = true;
-        payee.send(value);
+      if(msg.sender != payer)
+          require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
+
+      status = Status.Resolved;
+      payee.send(value);
     }
 
     function reclaimFunds() public payable {
-        require(!resolved, "Already resolved.");
-        require(!disputed, "There is a dispute.");
+        require(status == Status.Initial || status == Status.Reclaimed, "Status should be initial or reclaimed.");
         require(msg.sender == payer, "Only the payer can reclaim the funds.");
 
-        if(awaitingArbitrationFeeFromPayee){
+        if(status == Status.Reclaimed){
             require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
             payer.send(address(this).balance);
-            resolved = true;
+            status = Status.Resolved;
         }
         else{
+          require(now - createdAt < reclamationPeriod, "Reclamation period ended.");
           require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
           reclaimedAt = now;
-          awaitingArbitrationFeeFromPayee = true;
+          status = Status.Reclaimed;
         }
     }
 
     function depositArbitrationFeeForPayee() public payable {
-        require(!resolved, "Already resolved.");
-        require(!disputed, "There is a dispute.");
-        require(reclaimedAt > 0, "Payer didn't reclaim, nothing to dispute.");
+        require(status == Status.Reclaimed, "Payer didn't reclaim, nothing to dispute.");
         arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
-        disputed = true;
+        status = Status.Disputed;
     }
 
     function rule(uint _disputeID, uint _ruling) public {
         require(msg.sender == address(arbitrator), "Only the arbitrator can execute this.");
-        require(!resolved, "Already resolved");
-        require(disputed, "There should be dispute to execute a ruling.");
-        resolved = true;
+        require(status == Status.Disputed, "There should be dispute to execute a ruling.");
+        status = Status.Resolved;
         if(_ruling == uint(RulingOptions.PayerWins)) payer.send(address(this).balance);
         else payee.send(address(this).balance);
         emit Ruling(arbitrator, _disputeID, _ruling);
