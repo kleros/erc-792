@@ -42,7 +42,7 @@ Moving forward to second scenario:
 
 .. literalinclude:: ../contracts/examples/SimpleEscrow.sol
     :language: javascript
-    :emphasize-lines: 20,22,42-83
+    :emphasize-lines: 20,22,42-82
 
 
 ``reclaimFunds`` function lets ``payer`` to reclaim their funds. After ``payer`` calls this function for the first time the window (``arbitrationFeeDepositPeriod``) for ``payee`` to deposit arbitration fee starts.
