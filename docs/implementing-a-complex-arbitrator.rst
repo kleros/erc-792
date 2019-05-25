@@ -2,6 +2,9 @@
 Implementing a Complex Arbitrator
 =================================
 
+.. warning::
+  Smart contracts in this tutorial are not intended for production but educational purposes. Beware of using them on main network.
+
 We will refactor ``SimpleCentralizedArbitrator`` to add appeal functionality and dynamic costs.
 
 Recall ``SimpleCentralizedArbitrator``:
