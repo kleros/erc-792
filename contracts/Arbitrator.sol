@@ -1,7 +1,6 @@
 /**
  *  @title Arbitrator
  *  @author Clément Lesaege - <clement@lesaege.com>
- *  Bug Bounties: This code hasn't undertaken a bug bounty program yet.
  */
 
 pragma solidity ^0.5;
@@ -91,4 +90,5 @@ contract Arbitrator {
      *  @return ruling The ruling which has been given or the one which will be given if there is no appeal.
      */
     function currentRuling(uint _disputeID) public view returns(uint ruling);
+
 }

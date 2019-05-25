@@ -6,13 +6,14 @@ import "../Arbitrator.sol";
  *  ERC-1497: Evidence Standard
  */
 interface IEvidence {
-    /** @dev To be emmited when meta-evidence is submitted.
+
+    /** @dev To be emited when meta-evidence is submitted.
      *  @param _metaEvidenceID Unique identifier of meta-evidence.
      *  @param _evidence A link to the meta-evidence JSON.
      */
     event MetaEvidence(uint indexed _metaEvidenceID, string _evidence);
 
-    /** @dev To be raised when evidence are submitted. Should point to the ressource (evidences are not to be stored on chain due to gas considerations).
+    /** @dev To be raised when evidence are submitted. Should point to the resource (evidences are not to be stored on chain due to gas considerations).
      *  @param _arbitrator The arbitrator of the contract.
      *  @param _evidenceGroupID Unique identifier of the evidence group the evidence belongs to.
      *  @param _party The address of the party submiting the evidence. Note that 0x0 refers to evidence not submitted by any party.
@@ -20,7 +21,7 @@ interface IEvidence {
      */
     event Evidence(Arbitrator indexed _arbitrator, uint indexed _evidenceGroupID, address indexed _party, string _evidence);
 
-    /** @dev To be emmited when a dispute is created to link the correct meta-evidence to the disputeID
+    /** @dev To be emmited when a dispute is created to link the correct meta-evidence to the disputeID.
      *  @param _arbitrator The arbitrator of the contract.
      *  @param _disputeID ID of the dispute in the Arbitrator contract.
      *  @param _metaEvidenceID Unique identifier of meta-evidence.

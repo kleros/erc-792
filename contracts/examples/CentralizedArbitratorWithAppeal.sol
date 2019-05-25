@@ -5,7 +5,7 @@ import "../Arbitrator.sol";
 contract CentralizedArbitratorWithAppeal is Arbitrator {
 
     address public owner = msg.sender;
-    uint constant appealWindow = 3 days;
+    uint constant appealWindow = 3 minutes;
     uint internal arbitrationFee;
 
     struct Dispute {
@@ -37,7 +37,7 @@ contract CentralizedArbitratorWithAppeal is Arbitrator {
         disputeID = disputes.push(Dispute({
           arbitrated: IArbitrable(msg.sender),
           choices: _choices,
-          ruling: 0,
+          ruling: uint(-1),
           status: DisputeStatus.Waiting,
           appealPeriodStart: 0,
           appealPeriodEnd: 0,

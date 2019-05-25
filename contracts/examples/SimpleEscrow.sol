@@ -8,15 +8,16 @@ contract SimpleEscrow is IArbitrable {
     address payable public payee;
     uint public value;
     Arbitrator public arbitrator;
+    string public agreement;
+    uint public createdAt;
     uint constant public reclamationPeriod = 3 minutes;
     uint constant public arbitrationFeeDepositPeriod = 3 minutes;
-    string public agreement;
 
-    uint public createdAt;
-    uint public reclaimedAt;
 
     enum Status {Initial, Reclaimed, Disputed, Resolved}
     Status public status;
+
+    uint public reclaimedAt;
 
     enum RulingOptions {PayerWins, PayeeWins, Count}
 
@@ -71,10 +72,12 @@ contract SimpleEscrow is IArbitrable {
     }
 
     function remainingTimeToReclaim() public view returns (uint) {
-        return createdAt + reclamationPeriod - now;
+        if(status != Status.Initial) revert("Transaction is not in initial state.");
+        return (createdAt + reclamationPeriod - now) > reclamationPeriod ? 0 : (createdAt + reclamationPeriod - now);
     }
 
     function remainingTimeToDepositArbitrationFee() public view returns (uint) {
-        return reclaimedAt + arbitrationFeeDepositPeriod - now;
+        if (status != Status.Reclaimed) revert("Funds are not reclaimed.");
+        return (reclaimedAt + arbitrationFeeDepositPeriod - now) > arbitrationFeeDepositPeriod ? 0 : (reclaimedAt + arbitrationFeeDepositPeriod - now);
     }
 }

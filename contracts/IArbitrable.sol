@@ -1,7 +1,6 @@
 /**
  *  @title IArbitrable
  *  @author Enrique Piqueras - <enrique@kleros.io>
- *  Bug Bounties: This code hasn't undertaken a bug bounty program yet.
  */
 
 pragma solidity ^0.5;

@@ -75,12 +75,6 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
         emit Ruling(arbitrator, _disputeID, _ruling);
     }
 
-    function submitEvidence(string memory _evidence) public {
-        require(status != Status.Resolved);
-        require(msg.sender == payer || msg.sender == payee, "Third parties are not allowed to submit evidence.");
-        emit Evidence(arbitrator, evidenceGroupID, msg.sender, _evidence);
-    }
-
     function remainingTimeToReclaim() public view returns (uint) {
         if(status != Status.Initial) revert("Transaction is not in initial state.");
         return (createdAt + reclamationPeriod - now) > reclamationPeriod ? 0 : (createdAt + reclamationPeriod - now);
@@ -89,5 +83,11 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     function remainingTimeToDepositArbitrationFee() public view returns (uint) {
         if (status != Status.Reclaimed) revert("Funds are not reclaimed.");
         return (reclaimedAt + arbitrationFeeDepositPeriod - now) > arbitrationFeeDepositPeriod ? 0 : (reclaimedAt + arbitrationFeeDepositPeriod - now);
+    }
+
+    function submitEvidence(string memory _evidence) public {
+        require(status != Status.Resolved);
+        require(msg.sender == payer || msg.sender == payee, "Third parties are not allowed to submit evidence.");
+        emit Evidence(arbitrator, evidenceGroupID, msg.sender, _evidence);
     }
 }

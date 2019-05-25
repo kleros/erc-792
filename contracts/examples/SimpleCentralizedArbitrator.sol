@@ -28,7 +28,7 @@ contract SimpleCentralizedArbitrator is Arbitrator {
         disputeID = disputes.push(Dispute({
           arbitrated: IArbitrable(msg.sender),
           choices: _choices,
-          ruling: 0,
+          ruling: uint(-1),
           status: DisputeStatus.Waiting
           })) -1;
 
@@ -48,8 +48,8 @@ contract SimpleCentralizedArbitrator is Arbitrator {
 
         Dispute storage dispute = disputes[_disputeID];
 
-        require(_ruling <= dispute.choices, "Ruling out of bounds!");
-        require(dispute.status != DisputeStatus.Solved, "Can't rule an already solved dispute!");
+        require(_ruling < dispute.choices, "Ruling out of bounds!");
+        require(dispute.status == DisputeStatus.Waiting, "Dispute is not awaiting arbitration.");
 
         dispute.ruling = _ruling;
         dispute.status = DisputeStatus.Solved;
