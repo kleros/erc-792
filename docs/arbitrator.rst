@@ -1,63 +1,24 @@
-==========
-Arbitrator
-==========
+====================
+Arbitrator Interface
+====================
 
 
-.. code-block:: javascript
+.. literalinclude:: ../contracts/Arbitrator.sol
+    :language: javascript
 
-  pragma solidity ^0.5.8;
-
-  import "./IArbitrable.sol";
-
-  contract Arbitrator {
-
-      enum DisputeStatus {Waiting, Appealable, Solved}
-
-      modifier requireArbitrationFee(bytes memory _extraData) {
-          require(msg.value >= arbitrationCost(_extraData), "Not enough ETH to cover arbitration costs.");
-          _;
-      }
-
-      modifier requireAppealFee(uint _disputeID, bytes memory _extraData) {
-          require(msg.value >= appealCost(_disputeID, _extraData), "Not enough ETH to cover appeal costs.");
-          _;
-      }
-
-      event DisputeCreation(uint indexed _disputeID, IArbitrable indexed _arbitrable);
-
-      event AppealPossible(uint indexed _disputeID, IArbitrable indexed _arbitrable);
-
-      event AppealDecision(uint indexed _disputeID, IArbitrable indexed _arbitrable);
-
-      function createDispute(uint _choices, bytes memory _extraData) public requireArbitrationFee(_extraData) payable returns(uint disputeID) {}
-
-      function arbitrationCost(bytes memory _extraData) public view returns(uint fee);
-
-      function appeal(uint _disputeID, bytes memory _extraData) public requireAppealFee(_disputeID,_extraData) payable {
-          emit AppealDecision(_disputeID, IArbitrable(msg.sender));
-      }
-
-      function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee);
-
-      function appealPeriod(uint _disputeID) public view returns(uint start, uint end) {}
-
-      function disputeStatus(uint _disputeID) public view returns(DisputeStatus status);
-
-      function currentRuling(uint _disputeID) public view returns(uint ruling);
-  }
 
 
 Dispute Status
 ##############
 
-There are three statuses that function ``disputeStatus`` can return; ``Waiting``, ``Appealable`` and ``Solved``:
+There are three statuses that the function ``disputeStatus`` can return; ``Waiting``, ``Appealable`` and ``Solved``:
 
 
-* A *dispute* is in ``Waiting`` state when it arises (get's created, by ``createDispute`` function).
+* A *dispute* is in ``Waiting`` state when it arises (gets created, by ``createDispute`` function).
 
-* Is in ``Appealable`` state when it got a *ruling* and the ``Arbitrator`` allows to *appeal* it. When the ``Arbitrator`` allows to appeal, often it gives a time period to do so. If a dispute is not appealed within that time, ``disputeStatus`` should return ``Solved``.
+* Is in ``Appealable`` state when it got a *ruling* and the ``Arbitrator`` allows to *appeal* it. When the ``Arbitrator`` allows to appeal, it often gives a time period to do so. If a dispute is not appealed within that time, ``disputeStatus`` should return ``Solved``.
 
-* Is in ``Solved`` state when it got a *ruling* and the *ruling* is final. Note that this doesn't imply ``rule`` function on the ``Arbitrable`` has been called to enforce (execute) the *ruling*. It means the decision on the *dispute* is final and to be executed.
+* Is in ``Solved`` state when it got a *ruling* and the *ruling* is final. Note that this doesn't imply ``rule`` function on the ``Arbitrable`` has been called to enforce (execute) the *ruling*. It means that the decision on the *dispute* is final and to be executed.
 
 
 Events
@@ -81,7 +42,7 @@ And seven functions:
 
 * ``arbitrationCost`` should return the *arbitration fee* that is required to *create a dispute*, in weis.
 
-* ``appeal`` should appeal a dispute and should require caller to pass required *appeal fee*. ``appeal`` should be called by ``Arbitrable`` and should emit ``AppealDecision`` event.
+* ``appeal`` should appeal a dispute and should require the caller to pass the required *appeal fee*. ``appeal`` should be called by ``Arbitrable`` and should emit the ``AppealDecision`` event.
 
 * ``appealCost`` should return the *appeal fee* that is required to *appeal*, in weis.
 

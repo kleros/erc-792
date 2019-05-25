@@ -7,121 +7,35 @@ ERC-1497: Evidence Standard
 .. warning::
   Smart contracts in this tutorial are not intended for production but educational purposes. Beware of using them on main network.
 
-In ``SimpleEscrow`` contract, we used a ``string`` to store the agreement between parties. Deployer could format the file anyway they like.
-There are many ways to signal the information about the agreement but a standard way would allow interoperability.
+In ``SimpleEscrow`` contract, we used a ``string`` to store the agreement between parties. Deployer could format that ``string`` anyway they like as
+there are many ways to signal the information about the agreement.
 
-ERC-1497: Evidence Standard describes a standard way for these information. There are two types of information: Evidence and meta-evidence.
+Having a standard would allow interoperability. That's why *ERC-1497: Evidence Standard* describes a standard approach for this. It has two categories of information: evidence and meta-evidence.
 
-Evidence, self-explanatory, is a piece of information to support a proposition.
-Meta-evidence is the information about the dispute itself: Agreement, parties involved, the thing that is to be decided, ruling options etc.
+Evidence, as the name hints, is a piece of information to support a proposition.
+Meta-evidence is the information about the dispute itself: agreement, parties involved, the thing that is to be decided, ruling options etc.
 
 ERC-1497 brings three new events: MetaEvidence, Evidence and Dispute.
 
+
+.. literalinclude:: ../contracts/erc-1497/IEvidence.sol
+    :language: javascript
+
 * ``event MetaEvidence`` provides the context of the dispute, the question the arbitrators have to answer, the human readable meanings of rulings and specific modes of display for evidence. We use ``_metaEvidenceID`` to uniquely identify a metaevidence. This is necessary when there are multiple metaevidence usecases. ``_evidence`` contains the URI for metaevidence JSON file.
-* ``event Evidence`` links a piece of evidence with an arbitrator, sending party and a dispute.
-* ``event Dispute``  is raised when a dispute is created to link the proper meta-evidence and evidence group to the dispute. The event includes a reference to the arbitrator, a unique identifier for the dispute itself, the identifier used to look up the meta-evidence event log and the identifier of the evidence group that can be used to look up all evidence submitted in the grouping.
+* ``event Evidence`` links a piece of evidence with an arbitrator, sending party and dispute. ``_evidence`` contains the URI for evidence JSON file.
+* ``event Dispute``  is raised when a dispute is created to link the proper meta-evidence and evidence group to the dispute. The event includes a reference to the arbitrator, a unique identifier for the dispute itself, the identifier to look up the meta-evidence event log and the identifier of the evidence group that can be used to look up all evidence submitted in the grouping.
 
 Let's return to ``SimpleEscrow`` and refactor it to implement ERC-1497 interface. Recall ``SimpleEscrow``:
 
-.. code-block:: javascript
-
-  pragma solidity ^0.5.8;
-
-  import "../IArbitrable.sol";
-  import "../Arbitrator.sol";
-
-  contract SimpleEscrow is IArbitrable {
-      address payable public payer = msg.sender;
-      address payable public payee;
-      uint public value;
-      Arbitrator public arbitrator;
-      uint constant public reclamationPeriod = 3 minutes;
-      uint constant public arbitrationFeeDepositPeriod = 3 minutes;
-      string public agreement;
-      uint public createdAt;
-
-      bool public disputed;
-      bool public resolved;
-
-      bool public awaitingArbitrationFeeFromPayee;
-      uint public reclaimedAt;
-
-      enum RulingOptions {PayerWins, PayeeWins, Count}
-
-      constructor(address payable _payee, Arbitrator _arbitrator, string memory _agreement) public payable {
-          value = msg.value;
-          payee = _payee;
-          arbitrator = _arbitrator;
-          agreement = _agreement;
-          createdAt = now;
-      }
-
-      function releaseFunds() public {
-          require(!resolved, "Already resolved.");
-          require(reclaimedAt == 0, "Payer reclaimed the funds.");
-          require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
-
-          resolved = true;
-          payee.send(value);
-      }
-
-      function reclaimFunds() public payable {
-          require(!resolved, "Already resolved.");
-          require(!disputed, "There is a dispute.");
-          require(msg.sender == payer, "Only the payer can reclaim the funds.");
-
-          if(awaitingArbitrationFeeFromPayee){
-              require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
-              payer.send(address(this).balance);
-              resolved = true;
-          }
-          else{
-            require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
-            reclaimedAt = now;
-            awaitingArbitrationFeeFromPayee = true;
-          }
-      }
-
-      function depositArbitrationFeeForPayee() public payable {
-          require(!resolved, "Already resolved.");
-          require(!disputed, "There is a dispute.");
-          require(reclaimedAt > 0, "Payer didn't reclaim, nothing to dispute.");
-          arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
-          disputed = true;
-      }
-
-      function rule(uint _disputeID, uint _ruling) public {
-          require(msg.sender == address(arbitrator), "Only the arbitrator can execute this.");
-          require(!resolved, "Already resolved");
-          require(disputed, "There should be dispute to execute a ruling.");
-          resolved = true;
-          if(_ruling == uint(RulingOptions.PayerWins)) payer.send(address(this).balance);
-          else payee.send(address(this).balance);
-          emit Ruling(arbitrator, _disputeID, _ruling);
-      }
-  }
+.. literalinclude:: ../contracts/examples/SimpleEscrow.sol
+    :language: javascript
 
 Now, first lets's implement `IEvidence`:
 
 .. code-block:: javascript
-
-  pragma solidity ^0.5.8;
-
-  import "../Arbitrator.sol";
-
-  interface IEvidence {
-
-      event MetaEvidence(uint indexed _metaEvidenceID, string _evidence);
-
-      event Dispute(Arbitrator indexed _arbitrator, uint indexed _disputeID, uint _metaEvidenceID, uint _evidenceGroupID);
-
-      event Evidence(Arbitrator indexed _arbitrator, uint indexed _evidenceGroupID, address indexed _party, string _evidence);
-  }
-
-.. code-block:: javascript
   :emphasize-lines: 5,7
 
-  pragma solidity ^0.5.8;
+  pragma solidity ^0.5;
 
   import "../IArbitrable.sol";
   import "../Arbitrator.sol";
@@ -132,15 +46,15 @@ Now, first lets's implement `IEvidence`:
       address payable public payee;
       uint public value;
       Arbitrator public arbitrator;
-      uint constant public reclamationPeriod = 3 days;
-      uint constant public arbitrationFeeDepositPeriod = 3 days;
       string public agreement;
       uint public createdAt;
+      uint constant public reclamationPeriod = 3 minutes;
+      uint constant public arbitrationFeeDepositPeriod = 3 minutes;
 
-      bool public disputed;
-      bool public resolved;
 
-      bool public awaitingArbitrationFeeFromPayee;
+      enum Status {Initial, Reclaimed, Disputed, Resolved}
+      Status public status;
+
       uint public reclaimedAt;
 
       enum RulingOptions {PayerWins, PayeeWins, Count}
@@ -154,301 +68,85 @@ Now, first lets's implement `IEvidence`:
       }
 
       function releaseFunds() public {
-          require(!resolved, "Already resolved.");
-          require(reclaimedAt == 0, "Payer reclaimed the funds.");
-          require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
+        require(status == Status.Initial, "Transaction is not in initial status.");
 
-          resolved = true;
-          payee.send(value);
+        if(msg.sender != payer)
+            require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
+
+        status = Status.Resolved;
+        payee.send(value);
       }
 
       function reclaimFunds() public payable {
-          require(!resolved, "Already resolved.");
-          require(!disputed, "There is a dispute.");
+          require(status == Status.Initial || status == Status.Reclaimed, "Status should be initial or reclaimed.");
           require(msg.sender == payer, "Only the payer can reclaim the funds.");
 
-          if(awaitingArbitrationFeeFromPayee){
+          if(status == Status.Reclaimed){
               require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
               payer.send(address(this).balance);
-              resolved = true;
+              status = Status.Resolved;
           }
           else{
+            require(now - createdAt < reclamationPeriod, "Reclamation period ended.");
             require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
             reclaimedAt = now;
-            awaitingArbitrationFeeFromPayee = true;
+            status = Status.Reclaimed;
           }
       }
 
       function depositArbitrationFeeForPayee() public payable {
-          require(!resolved, "Already resolved.");
+          require(status == Status.Reclaimed, "Payer didn't reclaim, nothing to dispute.");
           arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
+          status = Status.Disputed;
       }
 
-      function executeRuling(uint _disputeID, uint _ruling) internal {
-          require(!resolved, "Already resolved");
-          require(disputed, "There should be dispute to execute a ruling.");
-          resolved = true;
-          if(_ruling == uint(RulingOptions.PayeeWins)) payer.send(address(this).balance);
+      function rule(uint _disputeID, uint _ruling) public {
+          require(msg.sender == address(arbitrator), "Only the arbitrator can execute this.");
+          require(status == Status.Disputed, "There should be dispute to execute a ruling.");
+          status = Status.Resolved;
+          if(_ruling == uint(RulingOptions.PayerWins)) payer.send(address(this).balance);
           else payee.send(address(this).balance);
           emit Ruling(arbitrator, _disputeID, _ruling);
+      }
+
+      function remainingTimeToReclaim() public view returns (uint) {
+          if(status != Status.Initial) revert("Transaction is not in initial state.");
+          return (createdAt + reclamationPeriod - now) > reclamationPeriod ? 0 : (createdAt + reclamationPeriod - now);
+      }
+
+      function remainingTimeToDepositArbitrationFee() public view returns (uint) {
+          if (status != Status.Reclaimed) revert("Funds are not reclaimed.");
+          return (reclaimedAt + arbitrationFeeDepositPeriod - now) > arbitrationFeeDepositPeriod ? 0 : (reclaimedAt + arbitrationFeeDepositPeriod - now);
       }
   }
 
 
-And then, we will get rid of ``string agreement``. Instead we need a ``string metaevidence`` and have to emit ``MetaEvidence``.
+And then, we will get rid of ``string agreement``.  Instead we need ``metaevidenceID``, ``metaevidence`` string and we have to emit ``MetaEvidence`` event.
 
-.. code-block:: javascript
-  :emphasize-lines: 24,26,32
+.. literalinclude:: ../contracts/examples/SimpleEscrowWithERC1497.sol
+    :language: javascript
+    :lines: 1-23,25-65,67-86
+    :emphasize-lines: 23,25,31
 
-  pragma solidity ^0.5.8;
-
-  import "../IArbitrable.sol";
-  import "../Arbitrator.sol";
-  import "../erc-1497/IEvidence.sol";
-
-  contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
-      address payable public payer = msg.sender;
-      address payable public payee;
-      uint public value;
-      Arbitrator public arbitrator;
-      uint constant public reclamationPeriod = 3 days;
-      uint constant public arbitrationFeeDepositPeriod = 3 days;
-      uint public createdAt;
-
-      bool public disputed;
-      bool public resolved;
-
-      bool public awaitingArbitrationFeeFromPayee;
-      uint public reclaimedAt;
-
-      enum RulingOptions {PayerWins, PayeeWins, Count}
-
-      uint constant metaevidenceID = 0
-
-      constructor(address payable _payee, Arbitrator _arbitrator, string memory _metaevidence) public payable {
-          value = msg.value;
-          payee = _payee;
-          arbitrator = _arbitrator;
-          createdAt = now;
-
-          emit MetaEvidence(metaevidenceID, _metaevidence);
-      }
-
-      function releaseFunds() public {
-          require(!resolved, "Already resolved.");
-          require(reclaimedAt == 0, "Payer reclaimed the funds.");
-          require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
-
-          resolved = true;
-          payee.send(value);
-      }
-
-      function reclaimFunds() public payable {
-          require(!resolved, "Already resolved.");
-          require(!disputed, "There is a dispute.");
-          require(msg.sender == payer, "Only the payer can reclaim the funds.");
-
-          if(awaitingArbitrationFeeFromPayee){
-              require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
-              payer.send(address(this).balance);
-              resolved = true;
-          }
-          else{
-            require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
-            reclaimedAt = now;
-            awaitingArbitrationFeeFromPayee = true;
-          }
-      }
-
-      function depositArbitrationFeeForPayee() public payable {
-          require(!resolved, "Already resolved.");
-          arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
-      }
-
-      function executeRuling(uint _disputeID, uint _ruling) internal {
-          require(!resolved, "Already resolved");
-          require(disputed, "There should be dispute to execute a ruling.");
-          resolved = true;
-          if(_ruling == uint(RulingOptions.PayeeWins)) payer.send(address(this).balance);
-          else payee.send(address(this).balance);
-          emit Ruling(arbitrator, _disputeID, _ruling);
-      }
-  }
 
 We set the identifier of metaevidence to constant zero, as there won't be multiple metaevidence for this contract. So any constant number would do the job. Then we emit ``MetaEvidence`` with provided
 metaevidence string. This string contains the URI from where the content of metaevidence can be fetched.
 
 Also we need to emit ``Dispute`` when we create a new dispute:
 
-.. code-block:: javascript
-  :emphasize-lines: 25,65
+.. literalinclude:: ../contracts/examples/SimpleEscrowWithERC1497.sol
+    :language: javascript
+    :lines: 1-86
+    :emphasize-lines: 24,66
 
-  pragma solidity ^0.5.8;
-
-  import "../IArbitrable.sol";
-  import "../Arbitrator.sol";
-  import "../erc-1497/IEvidence.sol";
-
-  contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
-      address payable public payer = msg.sender;
-      address payable public payee;
-      uint public value;
-      Arbitrator public arbitrator;
-      uint constant public reclamationPeriod = 3 days;
-      uint constant public arbitrationFeeDepositPeriod = 3 days;
-      uint public createdAt;
-
-      bool public disputed;
-      bool public resolved;
-
-      bool public awaitingArbitrationFeeFromPayee;
-      uint public reclaimedAt;
-
-      enum RulingOptions {PayerWins, PayeeWins, Count}
-
-      uint constant metaevidenceID = 0;
-      uint constant evidenceGroupID = 0;
-
-      constructor(address payable _payee, Arbitrator _arbitrator, string memory _metaevidence) public payable {
-          value = msg.value;
-          payee = _payee;
-          arbitrator = _arbitrator;
-          createdAt = now;
-
-          emit MetaEvidence(metaevidenceID, _metaevidence);
-      }
-
-      function releaseFunds() public {
-          require(!resolved, "Already resolved.");
-          require(reclaimedAt == 0, "Payer reclaimed the funds.");
-          require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
-
-          resolved = true;
-          payee.send(value);
-      }
-
-      function reclaimFunds() public payable {
-          require(!resolved, "Already resolved.");
-          require(!disputed, "There is a dispute.");
-          require(msg.sender == payer, "Only the payer can reclaim the funds.");
-
-          if(awaitingArbitrationFeeFromPayee){
-              require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
-              payer.send(address(this).balance);
-              resolved = true;
-          }
-          else{
-            require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
-            reclaimedAt = now;
-            awaitingArbitrationFeeFromPayee = true;
-          }
-      }
-
-      function depositArbitrationFeeForPayee() public payable {
-          require(!resolved, "Already resolved.");
-          uint disputeID = arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
-          emit Dispute(arbitrator, disputeID, metaevidenceID, evidenceGroupID);
-      }
-
-      function executeRuling(uint _disputeID, uint _ruling) internal {
-          require(!resolved, "Already resolved");
-          require(disputed, "There should be dispute to execute a ruling.");
-          resolved = true;
-          if(_ruling == uint(RulingOptions.PayeeWins)) payer.send(address(this).balance);
-          else payee.send(address(this).balance);
-          emit Ruling(arbitrator, _disputeID, _ruling);
-      }
-  }
 
 There will be only one dispute in this contract so we can use a constant zero for ``evidenceGroupID``.
 
 Lastly, we need a function to let parties submit evidence:
 
-.. code-block:: javascript
-  :emphasize-lines: 78,79,80,81
+.. literalinclude:: ../contracts/examples/SimpleEscrowWithERC1497.sol
+    :language: javascript
+    :lines: 1-93
+    :emphasize-lines: 88-92
 
-
-  pragma solidity ^0.5.8;
-
-  import "../IArbitrable.sol";
-  import "../Arbitrator.sol";
-  import "../erc-1497/IEvidence.sol";
-
-  contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
-      address payable public payer = msg.sender;
-      address payable public payee;
-      uint public value;
-      Arbitrator public arbitrator;
-      uint constant public reclamationPeriod = 3 days;
-      uint constant public arbitrationFeeDepositPeriod = 3 days;
-      uint public createdAt;
-
-      bool public disputed;
-      bool public resolved;
-
-      bool public awaitingArbitrationFeeFromPayee;
-      uint public reclaimedAt;
-
-
-      enum RulingOptions {PayerWins, PayeeWins, Count}
-
-      uint constant metaevidenceID = 0;
-      uint constant evidenceGroupID = 0;
-
-      constructor(address payable _payee, Arbitrator _arbitrator, string memory _metaevidence) public payable {
-          value = msg.value;
-          payee = _payee;
-          arbitrator = _arbitrator;
-          createdAt = now;
-
-          emit MetaEvidence(metaevidenceID, _metaevidence);
-      }
-
-      function releaseFunds() public {
-          require(!resolved, "Already resolved.");
-          require(reclaimedAt == 0, "Payer reclaimed the funds.");
-          require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
-
-          resolved = true;
-          payee.send(value);
-      }
-
-      function reclaimFunds() public payable {
-          require(!resolved, "Already resolved.");
-          require(!disputed, "There is a dispute.");
-          require(msg.sender == payer, "Only the payer can reclaim the funds.");
-
-          if(awaitingArbitrationFeeFromPayee){
-              require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
-              payer.send(address(this).balance);
-              resolved = true;
-          }
-          else{
-            require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
-            reclaimedAt = now;
-            awaitingArbitrationFeeFromPayee = true;
-          }
-      }
-
-      function depositArbitrationFeeForPayee() public payable {
-          require(!resolved, "Already resolved.");
-          uint disputeID = arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
-          emit Dispute(arbitrator, disputeID, metaevidenceID, evidenceGroupID);
-      }
-
-      function executeRuling(uint _disputeID, uint _ruling) internal {
-          require(!resolved, "Already resolved");
-          require(disputed, "There should be dispute to execute a ruling.");
-          resolved = true;
-          if(_ruling == uint(RulingOptions.PayerWins)) payer.send(address(this).balance);
-          else payee.send(address(this).balance);
-          emit Ruling(arbitrator, _disputeID, _ruling);
-      }
-
-      function submitEvidence(string memory _evidence) public {
-          require(msg.sender == payer || msg.sender == payee, "Third parties are not allowed to submit evidence.");
-          emit Evidence(arbitrator, evidenceGroupID, msg.sender, _evidence);
-      }
-  }
-
-Congrats, now the contract is ERC-1497 compatible!
+Congrats, now this arbitrable is ERC-1497 compatible!

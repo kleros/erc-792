@@ -14,7 +14,7 @@ ERC-792: Arbitration Standard proposes a standard for arbitration on Ethereum. T
 
 ``Arbitrable`` contracts are the contracts on which *rulings* of the authorized ``Arbitrator`` are enforceable.
 
-``Arbitrator`` contracts are the contracts which give *rulings* in case of *disputes*.
+``Arbitrator`` contracts are the contracts which give *rulings* on disputes.
 
 In other words, ``Arbitrator`` gives rulings, and ``Arbitrable`` enforces them.
 
