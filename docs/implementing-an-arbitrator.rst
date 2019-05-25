@@ -23,7 +23,7 @@ Next, we need a data structure to keep track of disputes:
 .. literalinclude:: ../contracts/examples/SimpleCentralizedArbitrator.sol
     :language: javascript
     :lines: 1-5,8-25
-    :emphasize-lines: 8-16
+    :emphasize-lines: 7-14
 
 
 
