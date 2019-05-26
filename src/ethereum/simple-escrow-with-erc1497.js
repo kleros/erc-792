@@ -1,4 +1,4 @@
-import SimpleEscrowWithERC1497 from './SimpleEscrowWithERC1497.json'
+import SimpleEscrowWithERC1497 from './simple-escrow-with-erc1497.json'
 import web3 from './web3'
 
 export const deploy = (payer, payee, amount, arbitrator, metaevidence) =>
@@ -11,9 +11,6 @@ export const deploy = (payer, payee, amount, arbitrator, metaevidence) =>
 
 export const contractInstance = address => {
   let instance = new web3.eth.Contract(SimpleEscrowWithERC1497.abi, address)
-  console.log('utility')
-  console.log(address)
-  instance.options.address = address
 
   return instance
 }

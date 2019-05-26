@@ -1,12 +1,12 @@
 import React from 'react'
-import * as SimpleEscrowWithERC1497 from './simple-escrow-with-erc1497'
-import * as Arbitrator from './arbitrator'
+import web3 from './ethereum/web3'
+import generateEvidence from './ethereum/generate-evidence'
+import generateMetaevidence from './ethereum/generate-meta-evidence'
+import * as SimpleEscrowWithERC1497 from './ethereum/simple-escrow-with-erc1497'
+import * as Arbitrator from './ethereum/arbitrator'
 import Ipfs from 'ipfs-http-client'
 import ipfsPublish from './ipfs-publish'
-import web3 from './web3'
 
-import generateMetaevidence from './generate-meta-evidence'
-import generateEvidence from './generate-evidence'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -126,7 +126,6 @@ class App extends React.Component {
     const { activeAddress } = this.state
 
     const result = await ipfsPublish('name', evidenceBuffer)
-    console.log(result)
 
     let evidence = generateEvidence(
       '/ipfs/' + result[0]['hash'],
@@ -138,8 +137,6 @@ class App extends React.Component {
       'evidence.json',
       enc.encode(JSON.stringify(evidence))
     )
-
-    console.log(ipfsHashEvidenceObj)
 
     SimpleEscrowWithERC1497.submitEvidence(
       contractAddress,

@@ -15,7 +15,5 @@ export default (payer, payee, amount, title, description) => ({
     [payer]: 'payer',
     [payee]: 'payee'
   },
-  evidenceDisplayInterfaceURI:
-    '/ipfs/QmefpKL4fmD84ZeAXaSJ7bHdkJiHVmydGTpAV6hk4ak57z/index.html',
   amount
 })

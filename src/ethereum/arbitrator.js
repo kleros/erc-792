@@ -1,4 +1,4 @@
-import Arbitrator from './Arbitrator.json'
+import Arbitrator from './arbitrator.json'
 import web3 from './web3'
 
 export const contractInstance = address => {

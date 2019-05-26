@@ -1,7 +1,5 @@
 import React from 'react'
 import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge'
@@ -63,7 +61,7 @@ class Interact extends React.Component {
       this.setState({ value: 'ERROR' })
     }
 
-    if (this.state.status == 0)
+    if (status == 0)
       try {
         this.setState({
           remainingTimeToReclaim: await this.props.remainingTimeToReclaimCallback(
@@ -75,7 +73,7 @@ class Interact extends React.Component {
         this.setState({ status: 'ERROR' })
       }
 
-    if (this.state.status == 1)
+    if (status == 1)
       try {
         this.setState({
           remainingTimeToDepositArbitrationFee: await this.props.remainingTimeToDepositArbitrationFeeCallback(
