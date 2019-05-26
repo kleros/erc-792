@@ -77,15 +77,15 @@ React Components
 App
 ***
 .. literalinclude:: ../src/app.js
-  :language: jsx
+:language: javascript
 
 Deploy
 ******
 
 .. literalinclude:: ../src/deploy.js
-  :language: jsx
+  :language: javascript
 
 Interact
 ********
 .. literalinclude:: ../src/interact.js
-  :language: jsx
+  :language: javascript
