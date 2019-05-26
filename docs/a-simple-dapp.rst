@@ -2,6 +2,9 @@
 A Simple DApp
 ================
 
+.. note::
+  You can find the finished React project `here <https://github.com/kleros/erc-792/src>`_ .
+
 Let's implement a simple decentralized application using ``SimpleEscrowWithERC1497`` contract.
 
 We will create a simplest possible UI as front-end development is out of the scope of this tutorial.
@@ -13,7 +16,6 @@ Tools used in this tutorial:
 * Create React App
 * Bootstrap
 * IPFS
-* Infura
 * MetaMask
 
 
