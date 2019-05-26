@@ -3,7 +3,7 @@ A Simple DApp
 ================
 
 .. note::
-  You can find the finished React project `here <https://github.com/kleros/erc-792/src>`_ .
+  You can find the finished React project `here <https://github.com/kleros/erc-792/tree/master/src>`_ .
 
 Let's implement a simple decentralized application using ``SimpleEscrowWithERC1497`` contract.
 
