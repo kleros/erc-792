@@ -21,7 +21,6 @@ class Interact extends React.Component {
   }
 
   async componentDidUpdate(prevProps) {
-    // Typical usage (don't forget to compare props):
     if (this.props.escrowAddress !== prevProps.escrowAddress) {
       await this.setState({ escrowAddress: this.props.escrowAddress })
       this.updateBadges()

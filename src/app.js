@@ -57,15 +57,11 @@ class App extends React.Component {
     this.setState({ lastDeployedAddress: result._address })
   }
 
-  load = contractAddress => {
-    console.log('app.js')
-    console.log(contractAddress)
-    return SimpleEscrowWithERC1497.contractInstance(contractAddress)
-  }
+  load = contractAddress =>
+    SimpleEscrowWithERC1497.contractInstance(contractAddress)
 
   reclaimFunds = async (contractAddress, value) => {
     const { activeAddress } = this.state
-    console.log(activeAddress)
     await SimpleEscrowWithERC1497.reclaimFunds(
       activeAddress,
       contractAddress,
@@ -75,7 +71,6 @@ class App extends React.Component {
 
   releaseFunds = async contractAddress => {
     const { activeAddress } = this.state
-    console.log(activeAddress)
 
     await SimpleEscrowWithERC1497.releaseFunds(activeAddress, contractAddress)
   }
@@ -96,31 +91,23 @@ class App extends React.Component {
   arbitrationFeeDepositPeriod = contractAddress =>
     SimpleEscrowWithERC1497.arbitrationFeeDepositPeriod(contractAddress)
 
-  remainingTimeToReclaim = contractAddress => {
-    return SimpleEscrowWithERC1497.remainingTimeToReclaim(contractAddress)
-  }
+  remainingTimeToReclaim = contractAddress =>
+    SimpleEscrowWithERC1497.remainingTimeToReclaim(contractAddress)
 
-  remainingTimeToDepositArbitrationFee = contractAddress => {
-    return SimpleEscrowWithERC1497.remainingTimeToDepositArbitrationFee(
+  remainingTimeToDepositArbitrationFee = contractAddress =>
+    SimpleEscrowWithERC1497.remainingTimeToDepositArbitrationFee(
       contractAddress
     )
-  }
 
-  arbitrationCost = (arbitratorAddress, extraData) => {
-    return Arbitrator.arbitrationCost(arbitratorAddress, extraData)
-  }
+  arbitrationCost = (arbitratorAddress, extraData) =>
+    Arbitrator.arbitrationCost(arbitratorAddress, extraData)
 
-  arbitrator = contractAddress => {
-    return SimpleEscrowWithERC1497.arbitrator(contractAddress)
-  }
+  arbitrator = contractAddress =>
+    SimpleEscrowWithERC1497.arbitrator(contractAddress)
 
-  status = contractAddress => {
-    return SimpleEscrowWithERC1497.status(contractAddress)
-  }
+  status = contractAddress => SimpleEscrowWithERC1497.status(contractAddress)
 
-  value = contractAddress => {
-    return SimpleEscrowWithERC1497.value(contractAddress)
-  }
+  value = contractAddress => SimpleEscrowWithERC1497.value(contractAddress)
 
   submitEvidence = async (contractAddress, evidenceBuffer) => {
     const { activeAddress } = this.state
@@ -150,7 +137,7 @@ class App extends React.Component {
       window.web3.eth.getAccounts((_, accounts) => {
         this.setState({ activeAddress: accounts[0] })
       })
-    else console.log('MetaMask account not detected :(')
+    else console.error('MetaMask account not detected :(')
 
     window.ethereum.on('accountsChanged', accounts => {
       this.setState({ activeAddress: accounts[0] })
