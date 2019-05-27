@@ -14,6 +14,7 @@ ERC-792: Arbitration Standard
    a-simple-dapp
    implementing-a-complex-arbitrable
    implementing-a-complex-arbitrator
+   wrap-up
 
 
 Indices and tables
