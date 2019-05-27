@@ -3,7 +3,7 @@ A Simple DApp
 *************
 
 .. note::
-  You can find the finished React project source code `here <https://github.com/kleros/erc-792/tree/master/src>`_. You can test it live `here <https://simple-escrow.netlify.com/>`_.
+  You can find the finished React project `source code here <https://github.com/kleros/erc-792/tree/master/src>`_. You can test it `live here <https://simple-escrow.netlify.com/>`_.
 
 
 Let's implement a simple decentralized application using ``SimpleEscrowWithERC1497`` contract.
@@ -140,5 +140,4 @@ Interact
 Arbitrator Side
 ###############
 
-We can deploy a ``SimpleCentralizedArbitrator`` to use as the arbitrator on the DApp we developed. For deployment, using `Remix <https://remix.ethereum.org/>`_ is recommended.
-To interact with the arbitrator, we can use `Centralized Arbitrator Dashboard <https://centralizedarbitrator.fyi>`_ by simply inputting contract address.
+To deploy and interact with an arbitrator, we can use `Centralized Arbitrator Dashboard <https://centralizedarbitrator.fyi>`_. It deploys an `AutoAppealableArbitrator <https://github.com/kleros/kleros-interaction/blob/master/contracts/standard/arbitration/AutoAppealableArbitrator.sol>`_ which is very similar to the one we developed in the tutorials.
