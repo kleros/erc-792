@@ -10,10 +10,8 @@ import "./Arbitrator.sol";
 /** @title IArbitrable
  *  Arbitrable interface.
  *  When developing arbitrable contracts, we need to:
- *  -Define the action taken when a ruling is received by the contract. We should do so in executeRuling.
- *  -Allow dispute creation. For this a function must:
- *      -Call arbitrator.createDispute.value(_fee)(_choices,_extraData);
- *      -Create the event Dispute(_arbitrator,_disputeID,_rulingOptions);
+ *  -Define the action taken when a ruling is received by the contract.
+ *  -Allow dispute creation. For this a function must call arbitrator.createDispute.value(_fee)(_choices,_extraData);
  */
 interface IArbitrable {
 

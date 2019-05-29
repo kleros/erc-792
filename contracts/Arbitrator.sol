@@ -18,14 +18,6 @@ contract Arbitrator {
 
     enum DisputeStatus {Waiting, Appealable, Solved}
 
-    modifier requireArbitrationFee(bytes memory _extraData) {
-        require(msg.value >= arbitrationCost(_extraData), "Not enough ETH to cover arbitration costs.");
-        _;
-    }
-    modifier requireAppealFee(uint _disputeID, bytes memory _extraData) {
-        require(msg.value >= appealCost(_disputeID, _extraData), "Not enough ETH to cover appeal costs.");
-        _;
-    }
 
     /** @dev To be raised when a dispute is created.
      *  @param _disputeID ID of the dispute.
@@ -50,7 +42,7 @@ contract Arbitrator {
      *  @param _extraData Can be used to give additional info on the dispute to be created.
      *  @return disputeID ID of the dispute created.
      */
-    function createDispute(uint _choices, bytes memory _extraData) public requireArbitrationFee(_extraData) payable returns(uint disputeID) {}
+    function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID);
 
     /** @dev Compute the cost of arbitration. It is recommended not to increase it often, as it can be highly time and gas consuming for the arbitrated contracts to cope with fee augmentation.
      *  @param _extraData Can be used to give additional info on the dispute to be created.
@@ -62,9 +54,7 @@ contract Arbitrator {
      *  @param _disputeID ID of the dispute to be appealed.
      *  @param _extraData Can be used to give extra info on the appeal.
      */
-    function appeal(uint _disputeID, bytes memory _extraData) public requireAppealFee(_disputeID,_extraData) payable {
-        emit AppealDecision(_disputeID, IArbitrable(msg.sender));
-    }
+    function appeal(uint _disputeID, bytes memory _extraData) public payable;
 
     /** @dev Compute the cost of appeal. It is recommended not to increase it often, as it can be higly time and gas consuming for the arbitrated contracts to cope with fee augmentation.
      *  @param _disputeID ID of the dispute to be appealed.
@@ -73,11 +63,11 @@ contract Arbitrator {
      */
     function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee);
 
-    /** @dev Compute the start and end of the dispute's current or next appeal period, if possible.
+    /** @dev Compute the start and end of the dispute's current or next appeal period, if possible. If not known or appeal is impossible: should return (0, 0).
      *  @param _disputeID ID of the dispute.
      *  @return The start and end of the period.
      */
-    function appealPeriod(uint _disputeID) public view returns(uint start, uint end) {}
+    function appealPeriod(uint _disputeID) public view returns(uint start, uint end);
 
     /** @dev Return the status of a dispute.
      *  @param _disputeID ID of the dispute to rule.

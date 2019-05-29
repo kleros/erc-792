@@ -24,7 +24,8 @@ contract SimpleCentralizedArbitrator is Arbitrator {
     }
 
     function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
-        super.createDispute(_choices, _extraData);
+        require(msg.value >= arbitrationCost(_extraData), "Not enough ETH to cover arbitration costs.");
+
         disputeID = disputes.push(Dispute({
           arbitrated: IArbitrable(msg.sender),
           choices: _choices,
@@ -48,7 +49,7 @@ contract SimpleCentralizedArbitrator is Arbitrator {
 
         Dispute storage dispute = disputes[_disputeID];
 
-        require(_ruling < dispute.choices, "Ruling out of bounds!");
+        require(_ruling <= dispute.choices, "Ruling out of bounds!");
         require(dispute.status == DisputeStatus.Waiting, "Dispute is not awaiting arbitration.");
 
         dispute.ruling = _ruling;
@@ -57,4 +58,12 @@ contract SimpleCentralizedArbitrator is Arbitrator {
         msg.sender.send(arbitrationCost(""));
         dispute.arbitrated.rule(_disputeID, _ruling);
     }
+
+    function appeal(uint _disputeID, bytes memory _extraData) public payable {
+
+    }
+
+    function appealPeriod(uint _disputeID) public view returns(uint start, uint end) {
+
+  }
 }

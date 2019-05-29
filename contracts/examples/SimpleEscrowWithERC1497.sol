@@ -18,7 +18,8 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     enum Status {Initial, Reclaimed, Disputed, Resolved}
     Status public status;
 
-    enum RulingOptions {PayerWins, PayeeWins, Count}
+    enum RulingOptions {RefusedToArbitrate, PayerWins, PayeeWins}
+    uint constant numberOfRulingOptions = 2;
 
     uint constant metaevidenceID = 0;
     uint constant evidenceGroupID = 0;
@@ -33,9 +34,9 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     }
 
     function releaseFunds() public {
-        require(status == Status.Initial, "Transaction is not in initial status.");
+        require(status == Status.Initial, "Transaction is not in Initial state.");
 
-        if(msg.sender != payer)
+        if (msg.sender != payer)
             require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
 
         status = Status.Resolved;
@@ -43,16 +44,16 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     }
 
     function reclaimFunds() public payable {
-        require(status == Status.Initial || status == Status.Reclaimed, "Status should be initial or reclaimed.");
+        require(status == Status.Initial || status == Status.Reclaimed, "Transaction is not in Initial or Reclaimed state.");
         require(msg.sender == payer, "Only the payer can reclaim the funds.");
 
-        if(status == Status.Reclaimed){
+        if (status == Status.Reclaimed){
             require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
             payer.send(address(this).balance);
             status = Status.Resolved;
         }
         else{
-          require(now - createdAt < reclamationPeriod, "Reclamation period ended.");
+          require(now - createdAt <= reclamationPeriod, "Reclamation period ended.");
           require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
           reclaimedAt = now;
           status = Status.Reclaimed;
@@ -60,8 +61,8 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     }
 
     function depositArbitrationFeeForPayee() public payable {
-        require(status == Status.Reclaimed, "Payer didn't reclaim, nothing to dispute.");
-        uint disputeID = arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
+        require(status == Status.Reclaimed, "Transaction is not in Reclaimed state.");
+        uint disputeID = arbitrator.createDispute.value(msg.value)(numberOfRulingOptions, "");
         status = Status.Disputed;
         emit Dispute(arbitrator, disputeID, metaevidenceID, evidenceGroupID);
     }
@@ -69,24 +70,26 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     function rule(uint _disputeID, uint _ruling) public {
         require(msg.sender == address(arbitrator), "Only the arbitrator can execute this.");
         require(status == Status.Disputed, "There should be dispute to execute a ruling.");
+        require(_ruling <= numberOfRulingOptions, "Ruling out of bounds!");
+
         status = Status.Resolved;
-        if(_ruling == uint(RulingOptions.PayerWins)) payer.send(address(this).balance);
+        if (_ruling == uint(RulingOptions.PayerWins)) payer.send(address(this).balance);
         else payee.send(address(this).balance);
         emit Ruling(arbitrator, _disputeID, _ruling);
     }
 
     function remainingTimeToReclaim() public view returns (uint) {
-        if(status != Status.Initial) revert("Transaction is not in initial state.");
+        if (status != Status.Initial) revert("Transaction is not in Initial state.");
         return (createdAt + reclamationPeriod - now) > reclamationPeriod ? 0 : (createdAt + reclamationPeriod - now);
     }
 
     function remainingTimeToDepositArbitrationFee() public view returns (uint) {
-        if (status != Status.Reclaimed) revert("Funds are not reclaimed.");
+        if (status != Status.Reclaimed) revert("Transaction is not in Reclaimed state.");
         return (reclaimedAt + arbitrationFeeDepositPeriod - now) > arbitrationFeeDepositPeriod ? 0 : (reclaimedAt + arbitrationFeeDepositPeriod - now);
     }
 
     function submitEvidence(string memory _evidence) public {
-        require(status != Status.Resolved);
+        require(status != Status.Resolved, "Transaction is not in Resolve state.");
         require(msg.sender == payer || msg.sender == payee, "Third parties are not allowed to submit evidence.");
         emit Evidence(arbitrator, evidenceGroupID, msg.sender, _evidence);
     }

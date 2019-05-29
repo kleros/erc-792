@@ -6,7 +6,7 @@ contract CentralizedArbitratorWithAppeal is Arbitrator {
 
     address public owner = msg.sender;
     uint constant appealWindow = 3 minutes;
-    uint internal arbitrationFee;
+    uint internal arbitrationFee = 1 finney;
 
     struct Dispute {
         IArbitrable arbitrated;
@@ -25,7 +25,7 @@ contract CentralizedArbitratorWithAppeal is Arbitrator {
     }
 
     function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee) {
-        fee = arbitrationFee ** (disputes[_disputeID].appealCount +2);
+        fee = arbitrationFee * (2 ** (disputes[_disputeID].appealCount +2));
     }
 
     function setArbitrationCost(uint _newCost) public {
@@ -33,7 +33,8 @@ contract CentralizedArbitratorWithAppeal is Arbitrator {
     }
 
     function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
-        super.createDispute(_choices, _extraData);
+        require(msg.value >= arbitrationCost(_extraData), "Not enough ETH to cover arbitration costs.");
+
         disputeID = disputes.push(Dispute({
           arbitrated: IArbitrable(msg.sender),
           choices: _choices,
@@ -65,18 +66,20 @@ contract CentralizedArbitratorWithAppeal is Arbitrator {
         Dispute storage dispute = disputes[_disputeID];
 
         require(_ruling <= dispute.choices, "Ruling out of bounds!");
-        require(dispute.status != DisputeStatus.Solved, "Can't rule an already solved dispute!");
+        require(dispute.status == DisputeStatus.Waiting, "Dispute is not awaiting arbitration.");
 
         dispute.ruling = _ruling;
         dispute.status = DisputeStatus.Appealable;
         dispute.appealPeriodStart = now;
         dispute.appealPeriodEnd = dispute.appealPeriodStart + appealWindow;
+
+        emit AppealPossible(_disputeID, dispute.arbitrated);
     }
 
     function executeRuling(uint _disputeID) public {
         Dispute storage dispute = disputes[_disputeID];
         require(dispute.status == DisputeStatus.Appealable, "The dispute must be appealable.");
-        require(now >= dispute.appealPeriodEnd, "The dispute must be executed after its appeal period has ended.");
+        require(now > dispute.appealPeriodEnd, "The dispute must be executed after its appeal period has ended.");
 
         dispute.status = DisputeStatus.Solved;
         dispute.arbitrated.rule(_disputeID, dispute.ruling);
@@ -84,14 +87,16 @@ contract CentralizedArbitratorWithAppeal is Arbitrator {
 
     function appeal(uint _disputeID, bytes memory _extraData) public payable {
         Dispute storage dispute = disputes[_disputeID];
+        dispute.appealCount++;
 
-        super.appeal(_disputeID, _extraData);
+        require(msg.value >= appealCost(_disputeID, _extraData), "Not enough ETH to cover appeal costs.");
 
         require(dispute.status == DisputeStatus.Appealable, "The dispute must be appealable.");
         require(now < dispute.appealPeriodEnd, "The appeal must occur before the end of the appeal period.");
 
         dispute.status = DisputeStatus.Waiting;
-        dispute.appealCount++;
+
+        emit AppealDecision(_disputeID, dispute.arbitrated);
     }
 
     function appealPeriod(uint _disputeID) public view returns(uint start, uint end) {

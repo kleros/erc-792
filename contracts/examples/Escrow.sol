@@ -7,7 +7,8 @@ import "../erc-1497/IEvidence.sol";
 contract Escrow is IArbitrable, IEvidence {
 
     enum Status {Initial, Reclaimed, Disputed, Resolved}
-    enum RulingOptions {PayerWins, PayeeWins, Count}
+    enum RulingOptions {RefusedToArbitrate, PayerWins, PayeeWins}
+    uint constant numberOfRulingOptions = 2;
 
     constructor() public {
     }
@@ -52,8 +53,8 @@ contract Escrow is IArbitrable, IEvidence {
     function releaseFunds(uint _txID) public {
         TX storage tx = txs[_txID];
 
-        require(tx.status == Status.Initial, "Transaction is not in initial status.");
-        if(msg.sender != tx.payer)
+        require(tx.status == Status.Initial, "Transaction is not in Initial state.");
+        if (msg.sender != tx.payer)
           require(now - tx.createdAt > tx.reclamationPeriod, "Payer still has time to reclaim.");
 
         tx.status = Status.Resolved;
@@ -63,7 +64,7 @@ contract Escrow is IArbitrable, IEvidence {
     function reclaimFunds(uint _txID) public payable {
         TX storage tx = txs[_txID];
 
-        require(tx.status == Status.Initial || tx.status == Status.Reclaimed, "Status should be initial or reclaimed.");
+        require(tx.status == Status.Initial || tx.status == Status.Reclaimed, "Transaction is not in Initial or Reclaimed state.");
         require(msg.sender == tx.payer, "Only the payer can reclaim the funds.");
 
         if(tx.status == Status.Reclaimed){
@@ -72,7 +73,7 @@ contract Escrow is IArbitrable, IEvidence {
             tx.status = Status.Resolved;
         }
         else{
-          require(now - tx.createdAt < tx.reclamationPeriod, "Reclamation period ended.");
+          require(now - tx.createdAt <= tx.reclamationPeriod, "Reclamation period ended.");
           require(msg.value == tx.arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
           tx.reclaimedAt = now;
           tx.status = Status.Reclaimed;
@@ -82,9 +83,9 @@ contract Escrow is IArbitrable, IEvidence {
     function depositArbitrationFeeForPayee(uint _txID) public payable {
         TX storage tx = txs[_txID];
 
-        require(tx.status == Status.Reclaimed, "Payer didn't reclaim, nothing to dispute.");
+        require(tx.status == Status.Reclaimed, "Transaction is not in Reclaimed state.");
 
-        tx.disputeID = tx.arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
+        tx.disputeID = tx.arbitrator.createDispute.value(msg.value)(numberOfRulingOptions, "");
         tx.status = Status.Disputed;
         disputeIDtoTXID[tx.disputeID] = _txID;
         emit Dispute(tx.arbitrator, tx.disputeID, _txID, _txID);
@@ -96,9 +97,11 @@ contract Escrow is IArbitrable, IEvidence {
 
         require(msg.sender == address(tx.arbitrator), "Only the arbitrator can execute this.");
         require(tx.status == Status.Disputed, "There should be dispute to execute a ruling.");
+        require(_ruling <= numberOfRulingOptions, "Ruling out of bounds!");
+
         tx.status = Status.Resolved;
 
-        if(_ruling == uint(RulingOptions.PayerWins)) tx.payer.send(tx.value + tx.payerFeeDeposit);
+        if (_ruling == uint(RulingOptions.PayerWins)) tx.payer.send(tx.value + tx.payerFeeDeposit);
         else tx.payee.send(tx.value + tx.payeeFeeDeposit);
         emit Ruling(tx.arbitrator, _disputeID, _ruling);
     }
