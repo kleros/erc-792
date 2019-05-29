@@ -1,8 +1,8 @@
 import Arbitrator from './arbitrator.json'
 import web3 from './web3'
 
-export const contractInstance = address => 
-  return new web3.eth.Contract(Arbitrator.abi, address)
+export const contractInstance = address =>
+  new web3.eth.Contract(Arbitrator.abi, address)
 
 export const arbitrationCost = (instanceAddress, extraData) =>
   contractInstance(instanceAddress)
