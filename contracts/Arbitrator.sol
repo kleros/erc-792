@@ -46,9 +46,9 @@ contract Arbitrator {
 
     /** @dev Compute the cost of arbitration. It is recommended not to increase it often, as it can be highly time and gas consuming for the arbitrated contracts to cope with fee augmentation.
      *  @param _extraData Can be used to give additional info on the dispute to be created.
-     *  @return fee Amount to be paid.
+     *  @return cost Amount to be paid.
      */
-    function arbitrationCost(bytes memory _extraData) public view returns(uint fee);
+    function arbitrationCost(bytes memory _extraData) public view returns(uint cost);
 
     /** @dev Appeal a ruling. Note that it has to be called before the arbitrator contract calls rule.
      *  @param _disputeID ID of the dispute to be appealed.
@@ -59,9 +59,9 @@ contract Arbitrator {
     /** @dev Compute the cost of appeal. It is recommended not to increase it often, as it can be higly time and gas consuming for the arbitrated contracts to cope with fee augmentation.
      *  @param _disputeID ID of the dispute to be appealed.
      *  @param _extraData Can be used to give additional info on the dispute to be created.
-     *  @return fee Amount to be paid.
+     *  @return cost Amount to be paid.
      */
-    function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee);
+    function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint cost);
 
     /** @dev Compute the start and end of the dispute's current or next appeal period, if possible. If not known or appeal is impossible: should return (0, 0).
      *  @param _disputeID ID of the dispute.
