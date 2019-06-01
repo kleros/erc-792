@@ -15,11 +15,3 @@ ERC-792: Arbitration Standard
    implementing-a-complex-arbitrable
    implementing-a-complex-arbitrator
    wrap-up
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
