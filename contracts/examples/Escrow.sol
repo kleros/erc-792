@@ -116,4 +116,18 @@ contract Escrow is IArbitrable, IEvidence {
         emit Evidence(tx.arbitrator, _txID, msg.sender, _evidence);
     }
 
+    function remainingTimeToReclaim(uint _txID) public view returns (uint) {
+        TX storage tx = txs[_txID];
+
+        if (tx.status != Status.Initial) revert("Transaction is not in Initial state.");
+        return (tx.createdAt + tx.reclamationPeriod - now) > tx.reclamationPeriod ? 0 : (tx.createdAt + tx.reclamationPeriod - now);
+    }
+
+    function remainingTimeToDepositArbitrationFee(uint _txID) public view returns (uint) {
+        TX storage tx = txs[_txID];
+
+        if (tx.status != Status.Reclaimed) revert("Transaction is not in Reclaimed state.");
+        return (tx.reclaimedAt + tx.arbitrationFeeDepositPeriod - now) > tx.arbitrationFeeDepositPeriod ? 0 : (tx.reclaimedAt + tx.arbitrationFeeDepositPeriod - now);
+    }
+
 }
