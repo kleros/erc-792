@@ -8,6 +8,9 @@ import Ipfs from 'ipfs-http-client'
 import ipfsPublish from './ipfs-publish'
 
 import Container from 'react-bootstrap/Container'
+import Jumbotron from 'react-bootstrap/Jumbotron'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Deploy from './deploy.js'
@@ -179,6 +182,24 @@ class App extends React.Component {
               valueCallback={this.value}
               submitEvidenceCallback={this.submitEvidence}
             />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Form action="https://centralizedarbitrator.fyi">
+              <Jumbotron className="m-5 text-center">
+                <h1>Need to interact with your arbitrator contract?</h1>
+                <p>
+                  We have a general purpose user interface for centralized
+                  arbitrators (like we have developed in the tutorial) already.
+                </p>
+                <p>
+                  <Button type="submit" variant="primary">
+                    Visit Centralized Arbitrator Dashboard
+                  </Button>
+                </p>
+              </Jumbotron>
+            </Form>
           </Col>
         </Row>
       </Container>
