@@ -43,7 +43,7 @@ Setting Up Web3
 ===============
 
 
-Let's create a new file called ``web3.js`` under ``ethereum`` directory. We will put a helper inside it which will let us access MetaMask for sending transactions and querying the blockchain. For more detail please see `MetaMask documentation <https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider>`_ .
+Let's create a new file called ``web3.js`` under ``ethereum`` directory. We will put a helper inside it which will let us access MetaMask for sending transactions and querying the blockchain. For more details please see `MetaMask documentation <https://metamask.github.io/metamask-docs/API_Reference/Ethereum_Provider>`_ .
 
 
 .. literalinclude:: ../src/ethereum/web3.js
@@ -56,7 +56,7 @@ Preparing Helper Functions For SimpleEscrowWithERC1497 And Arbitrator Contracts
 
 We need to call functions of ``SimpleEscrowWithERC1497`` and the arbitrator (for ``arbitrationCost``, to be able to send correct amount when creating a dispute), so we need helpers for them.
 
-We will import build artifacts of ``SimpleEscrowWithERC1497`` and ``Arbitrator`` contracts to use their abis (`application binary interface <https://ethereum.stackexchange.com/questions/234/what-is-an-abi-and-why-is-it-needed-to-interact-with-contracts>`_).
+We will import build artifacts of ``SimpleEscrowWithERC1497`` and ``Arbitrator`` contracts to use their ABIs (`application binary interface <https://ethereum.stackexchange.com/questions/234/what-is-an-abi-and-why-is-it-needed-to-interact-with-contracts>`_).
 So we copy those under ``ethereum`` directory and create two helper files (``arbitrator.js`` and ``simple-escrow-with-erc1497.js``) using each of them.
 
 

@@ -28,7 +28,7 @@ Next, we need a data structure to keep track of disputes:
 
 
 Each dispute belongs to an ``Arbitrable`` contract, so we have ``arbitrated`` field for it.
-Each dispute has a number of ruling options: For example, Party A wins (represented by ``ruling = 0``) and Party B (represented by ``ruling = 1``) wins.
+Each dispute has a number of ruling options: For example, Party A wins (represented by ``ruling = 1``) and Party B wins (represented by ``ruling = 2``).
 Each dispute will have a ruling, we will store it inside ``ruling`` field.
 Finally, each dispute will have a status, and we store it inside ``status`` field.
 

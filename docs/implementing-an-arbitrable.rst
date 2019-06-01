@@ -12,7 +12,7 @@ Let's start:
 
 .. literalinclude:: ../contracts/examples/SimpleEscrow.sol
     :language: javascript
-    :lines: 1-15,23-30
+    :lines: 1-14,24-30
 
 
 ``payer`` deploys the contract depositing the payment amount and specifying ``payee`` address, ``arbitrator`` that is authorized to rule and ``agreement`` string. Notice that ``payer = msg.sender``.
@@ -42,7 +42,7 @@ Moving forward to second scenario:
 
 .. literalinclude:: ../contracts/examples/SimpleEscrow.sol
     :language: javascript
-    :emphasize-lines: 20,22,42-82
+    :emphasize-lines: 20,22,23,42-
 
 
 ``reclaimFunds`` function lets ``payer`` to reclaim their funds. After ``payer`` calls this function for the first time the window (``arbitrationFeeDepositPeriod``) for ``payee`` to deposit arbitration fee starts.

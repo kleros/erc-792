@@ -24,13 +24,15 @@ Let's separate contract deployment and transaction creation:
 
 
 We first start by removing global state variables and defining ``TX`` struct. Each instance of this struct will represent a transaction thus will have transaction specific variables instead of globals.
-We will store transactions inside ``txs`` array. And will create new transactions via ``newTransaction`` function.
+We stored transactions inside ``txs`` array. And created new transactions via ``newTransaction`` function.
 
 ``newTransaction`` function simply takes transaction specific information and push a ``TX`` into ``txs``. This ``txs`` array is append-only, we will never remove any item.
-Having this, we will uniquely identify each transaction by their index in the array.
+Having this, we uniquely identify each transaction by their index in the array.
 
-Next, we update all the functions with transaction specific variables instead of globals. Changes are merely adding ``tx.`` prefixes in front of expressions.
+Next, we updated all the functions with transaction specific variables instead of globals. Changes are merely adding ``tx.`` prefixes in front of expressions.
 
-We don't ``send(address(this).balance)`` now as the contract balance includes funds from all transactions. Instead we store deposited fee amounts and use following expression: ``tx.payer.send(tx.value + tx.payerFeeDeposit);``.
+We also stored fee deposits for each party, as the smart contract now has balances for multiple transactions we can't ``send(address(this).balance)``. Instead we used ``tx.payer.send(tx.value + tx.payerFeeDeposit);`` if ``payer`` wins and ``tx.payee.send(tx.value + tx.payeeFeeDeposit);`` if ``payee`` wins.
 
-Good job, now we have an escrow contract which can handle multiple transactions between different parties and arbitrators.
+Notice that ``rule`` function has no transaction ID parameter but we need to obtain transaction details of given dispute. We achieved this by storing transaction ID for respective dispute ID as ``disputeIDtoTXID``. Just after dispute creation (inside ``depositArbitrationFeeForPayee``) we store this relation with ``disputeIDtoTXID[tx.disputeID] = _txID;`` statement.
+
+Good job! Now we have an escrow contract which can handle multiple transactions between different parties and arbitrators.
