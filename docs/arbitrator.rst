@@ -38,11 +38,12 @@ Functions
 
 And seven functions:
 
-* ``createDispute`` should create a dispute with given number of possible ``_choices`` for decisions. ``_extraData`` is for passing any extra information for any kind of custom handling. While calling ``createDispute``, caller has to pass required *arbitration fee*, otherwise ``createDispute`` should revert. ``createDispute`` should be called by the ``Arbitrable``.
+* ``createDispute`` should create a dispute with given number of possible ``_choices`` for decisions. ``_extraData`` is for passing any extra information for any kind of custom handling.
+  While calling ``createDispute``, caller has to pass required *arbitration fee*, otherwise ``createDispute`` should revert. ``createDispute`` should be called by an ``Arbitrable``. Lastly, it should emit ``DisputeCreation`` event.
 
-* ``arbitrationCost`` should return the *arbitration fee* that is required to *create a dispute*, in weis.
+* ``arbitrationCost`` should return the *arbitration cost* that is required to *create a dispute*, in weis.
 
-* ``appeal`` should appeal a dispute and should require the caller to pass the required *appeal fee*. ``appeal`` should be called by ``Arbitrable`` and should emit the ``AppealDecision`` event.
+* ``appeal`` should appeal a dispute and should require the caller to pass the required *appeal fee*. ``appeal`` should be called by an ``Arbitrable`` and should emit the ``AppealDecision`` event.
 
 * ``appealCost`` should return the *appeal fee* that is required to *appeal*, in weis.
 
@@ -50,4 +51,4 @@ And seven functions:
 
 * ``disputeStatus`` should return the status of dispute; ``Waiting``, ``Appealable`` or ``Solved``.
 
-* ``currentRuling`` should return the current ruling (executed or not, appealed or not) of a dispute.
+* ``currentRuling`` should return the current ruling of a dispute.
