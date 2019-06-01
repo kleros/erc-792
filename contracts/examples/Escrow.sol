@@ -74,7 +74,8 @@ contract Escrow is IArbitrable, IEvidence {
         }
         else{
           require(now - tx.createdAt <= tx.reclamationPeriod, "Reclamation period ended.");
-          require(msg.value == tx.arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
+          require(msg.value >= tx.arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
+          tx.payerFeeDeposit = msg.value;
           tx.reclaimedAt = now;
           tx.status = Status.Reclaimed;
         }
@@ -84,7 +85,8 @@ contract Escrow is IArbitrable, IEvidence {
         TX storage tx = txs[_txID];
 
         require(tx.status == Status.Reclaimed, "Transaction is not in Reclaimed state.");
-
+        
+        tx.payeeFeeDeposit = msg.value;
         tx.disputeID = tx.arbitrator.createDispute.value(msg.value)(numberOfRulingOptions, "");
         tx.status = Status.Disputed;
         disputeIDtoTXID[tx.disputeID] = _txID;
