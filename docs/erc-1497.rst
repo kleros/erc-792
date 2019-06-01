@@ -17,6 +17,7 @@ Meta-evidence is the information about the dispute itself: agreement, parties in
 
 ERC-1497 brings three new events: MetaEvidence, Evidence and Dispute.
 
+.. image:: erc1497.png
 
 .. literalinclude:: ../contracts/erc-1497/IEvidence.sol
     :language: javascript
@@ -39,7 +40,7 @@ Now, first lets's implement `IEvidence`:
 
   import "../IArbitrable.sol";
   import "../Arbitrator.sol";
-  import "../erc-1497/IEvidence.sol"
+  import "../erc-1497/IEvidence.sol";
 
   contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
       address payable public payer = msg.sender;
