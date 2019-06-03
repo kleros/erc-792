@@ -12,7 +12,7 @@ Recall ``SimpleCentralizedArbitrator``:
 .. literalinclude:: ../contracts/examples/SimpleCentralizedArbitrator.sol
     :language: javascript
 
-First let's implement appeal:
+First, let's implement the appeal:
 
 .. code-block:: javascript
   :emphasize-lines: 8,15,16,36,37,44-48,55-94
@@ -114,18 +114,18 @@ First let's implement appeal:
 
 
 
-We first define ``appealWindow`` constant which is the amount of time a dispute stays appealable.
+We first define ``appealWindow`` constant, which is the amount of time a dispute stays appealable.
 
 To implement ``appealPeriod`` function of the ERC-792 interface, we define two additional variables in ``Dispute`` struct: ``appealPeriodStart`` and ``appealPeriodEnd``.
 
-``DisputeStatus`` function is also updated to handle the case where a dispute has ``DisputeStatus.Appealable`` status but appeal window is closed so actually it is ``DisputeStatus.Solved``.
+``DisputeStatus`` function is also updated to handle the case where a dispute has ``DisputeStatus.Appealable`` status, but the appeal window is closed, so actually it is ``DisputeStatus.Solved``.
 
 The important change is we divided proxy ``rule`` function into two parts.
 
 - ``giveRuling``: Gives ruling, but does not enforce it.
-- ``executeRuling`` Enforces ruling, only after appeal window is closed.
+- ``executeRuling`` Enforces ruling, only after the appeal window is closed.
 
-Before, there was no appeal functionality, so we didn't have to wait for appeal and enforced the ruling immediately after giving the ruling. Now we need to do them separately.
+Before, there was no appeal functionality, so we didn't have to wait for appeal and ruling was enforced immediately after giving the ruling. Now we need to do them separately.
 
 ``appeal`` function checks whether the dispute is eligible for appeal and performs the appeal by setting ``status`` back to the default value, ``DisputeStatus.Waiting``.
 
@@ -139,7 +139,7 @@ Now let's revisit cost functions:
 
 
 
-We implemented a setter for arbitration cost and we made appeal cost exponentially increasing.
+We implemented a setter for arbitration cost and we made the appeal cost as exponentially increasing.
 We achieved that by counting the number of appeals with ``appealCount`` variable, which gets increased each time ``appeal`` is executed.
 
 This concludes our implementation of a centralized arbitrator with appeal functionality.

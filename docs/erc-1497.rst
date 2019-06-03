@@ -7,13 +7,13 @@ ERC-1497: Evidence Standard
 .. warning::
   Smart contracts in this tutorial are not intended for production but educational purposes. Beware of using them on main network.
 
-In ``SimpleEscrow`` contract, we used a ``string`` to store the agreement between parties. Deployer could format that ``string`` anyway they like as
+In ``SimpleEscrow`` contract, we used a ``string`` to store the agreement between the parties. The deployer could format that ``string`` anyway they like, as
 there are many ways to signal the information about the agreement.
 
 Instead, having a standard would allow interoperability. That's why *ERC-1497: Evidence Standard* describes a standard approach for this. It has two categories of information: evidence and meta-evidence.
 
 Evidence, as the name hints, is a piece of information to support a proposition.
-Meta-evidence is the information about the dispute itself: agreement, parties involved, the thing that is to be decided, ruling options etc.
+Meta-evidence is the information about the dispute itself: the agreement, parties involved, the thing that is to be decided, ruling options etc.
 
 ERC-1497 introduces three new events: MetaEvidence, Evidence and Dispute.
 
@@ -22,7 +22,7 @@ ERC-1497 introduces three new events: MetaEvidence, Evidence and Dispute.
 .. literalinclude:: ../contracts/erc-1497/IEvidence.sol
     :language: javascript
 
-* ``event MetaEvidence`` provides the context of the dispute, the question the arbitrators have to answer, the human readable meanings of rulings and specific modes of display for evidence. We use ``_metaEvidenceID`` to uniquely identify a metaevidence. This is necessary when there are multiple metaevidence usecases. ``_evidence`` contains the URI for metaevidence JSON file.
+* ``event MetaEvidence`` provides the context of the dispute, the question the arbitrators have to answer, the human readable meanings of rulings and specific modes of display for evidence. We use ``_metaEvidenceID`` to uniquely identify a piece of meta-evidence. This is necessary when there are multiple meta-evidence use-cases. ``_evidence`` contains the URI for meta-evidence JSON file.
 * ``event Evidence`` links a piece of evidence with an arbitrator, sending party and dispute. ``_evidence`` contains the URI for evidence JSON file.
 * ``event Dispute``  is raised when a dispute is created to link the proper meta-evidence and evidence group to the dispute. The event includes a reference to the arbitrator, a unique identifier for the dispute itself, the identifier to look up the meta-evidence event log and the identifier of the evidence group that can be used to look up all evidence submitted in the grouping.
 
@@ -31,7 +31,7 @@ Let's return to ``SimpleEscrow`` and refactor it to implement ERC-1497 interface
 .. literalinclude:: ../contracts/examples/SimpleEscrow.sol
     :language: javascript
 
-Now, first lets's implement `IEvidence`:
+Now, first let's implement `IEvidence`:
 
 .. code-block:: javascript
   :emphasize-lines: 5,7
@@ -130,10 +130,10 @@ And then, we will get rid of ``string agreement``.  Instead we need ``uint metae
     :emphasize-lines: 24,26,32
 
 
-We set the identifier of metaevidence to constant zero, as there won't be multiple metaevidence for this contract. So any constant number would do the job. Then we emit ``MetaEvidence`` with provided
-``_metaevidence``. This string contains the URI from where the content of metaevidence can be fetched.
+We set the identifier of meta-evidence to constant zero, as there won't be multiple meta-evidence for this contract. Any constant number would do the job. Then we emit ``MetaEvidence`` with the provided
+``_metaevidence``. This string contains the URI from where the content of meta-evidence can be fetched.
 
-Also we need to emit ``Dispute`` when we create a new dispute:
+Also, we need to emit ``Dispute`` when we create a new dispute:
 
 .. literalinclude:: ../contracts/examples/SimpleEscrowWithERC1497.sol
     :language: javascript
@@ -149,4 +149,4 @@ Lastly, we need a function to let parties submit evidence:
     :language: javascript
     :emphasize-lines: 90-95
 
-Congratulations, now this arbitrable is ERC-1497 compatible!
+Congratulations, now your arbitrable is ERC-1497 compatible!

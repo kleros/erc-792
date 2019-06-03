@@ -13,8 +13,8 @@ Recall ``SimpleEscrowWithERC1497``:
     :language: javascript
 
 
-Payer needs to deploy a contract for each transaction, but contract deployment is expensive.
-Instead we could use the same contract for multiple transactions between arbitrary parties with arbitrary arbitrators.
+The payer needs to deploy a contract for each transaction, but contract deployment is expensive.
+Instead, we could use the same contract for multiple transactions between arbitrary parties with arbitrary arbitrators.
 
 Let's separate contract deployment and transaction creation:
 
@@ -23,16 +23,18 @@ Let's separate contract deployment and transaction creation:
     :emphasize-lines: 9-
 
 
-We first start by removing global state variables and defining ``TX`` struct. Each instance of this struct will represent a transaction thus will have transaction specific variables instead of globals.
-We stored transactions inside ``txs`` array. And created new transactions via ``newTransaction`` function.
+We first start by removing the global state variables and defining ``TX`` struct. Each instance of this struct will represent a transaction, thus will have transaction-specific variables instead of globals.
+We stored transactions inside ``txs`` array. We also created new transactions via ``newTransaction`` function.
 
-``newTransaction`` function simply takes transaction specific information and push a ``TX`` into ``txs``. This ``txs`` array is append-only, we will never remove any item.
-Having this, we uniquely identify each transaction by their index in the array.
+``newTransaction`` function simply takes transaction-specific information and pushes a ``TX`` into ``txs``. This ``txs`` array is append-only, we will never remove any item.
+By implementing this, we can uniquely identify each transaction by their index in the array.
 
-Next, we updated all the functions with transaction specific variables instead of globals. Changes are merely adding ``tx.`` prefixes in front of expressions.
+Next, we updated all the functions with transaction-specific variables instead of globals. Changes are merely adding ``tx.`` prefixes in front of expressions.
 
-We also stored fee deposits for each party, as the smart contract now has balances for multiple transactions we can't ``send(address(this).balance)``. Instead we used ``tx.payer.send(tx.value + tx.payerFeeDeposit);`` if ``payer`` wins and ``tx.payee.send(tx.value + tx.payeeFeeDeposit);`` if ``payee`` wins.
+We also stored fee deposits for each party, as the smart contract now has balances for multiple transactions that we can't ``send(address(this).balance)``.
+Instead, we used ``tx.payer.send(tx.value + tx.payerFeeDeposit);`` if ``payer`` wins and ``tx.payee.send(tx.value + tx.payeeFeeDeposit);`` if ``payee`` wins.
 
-Notice that ``rule`` function has no transaction ID parameter but we need to obtain transaction details of given dispute. We achieved this by storing transaction ID for respective dispute ID as ``disputeIDtoTXID``. Just after dispute creation (inside ``depositArbitrationFeeForPayee``) we store this relation with ``disputeIDtoTXID[tx.disputeID] = _txID;`` statement.
+Notice that ``rule`` function has no transaction ID parameter, but we need to obtain transaction details of given dispute. We achieved this by storing the transaction ID for respective dispute ID as ``disputeIDtoTXID``.
+Just after dispute creation (inside ``depositArbitrationFeeForPayee``), we store this relation with ``disputeIDtoTXID[tx.disputeID] = _txID;`` statement.
 
 Good job! Now we have an escrow contract which can handle multiple transactions between different parties and arbitrators.

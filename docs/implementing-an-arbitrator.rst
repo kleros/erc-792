@@ -12,7 +12,7 @@ When developing arbitrator contracts we need to:
 * Allow enforcing rulings. For this a function must execute ``arbitrable.rule(disputeID, ruling)``.
 
 
-To demonstrate how to use the standard, we will implement a very simple arbitrator where single address gives rulings and there won't be any appeals.
+To demonstrate how to use the standard, we will implement a very simple arbitrator where a single address gives rulings and there aren't any appeals.
 
 Let's start by implementing cost functions:
 
@@ -21,8 +21,8 @@ Let's start by implementing cost functions:
     :lines: 1-5,17-25
 
 
-We set arbitration fee to ``0.1 ether`` and appeal fee to an astronomic amount which can't be afforded.
-So in practice, we disabled appeal, for simplicity. We made costs constant, again, for sake of simplicity of this tutorial.
+We set the arbitration fee to ``0.1 ether`` and the appeal fee to an astronomical amount which can't be afforded.
+So in practice, we disabled appeal, for simplicity. We made costs constant, again, for the sake of simplicity of this tutorial.
 
 Next, we need a data structure to keep track of disputes:
 
@@ -49,10 +49,10 @@ Next, we can implement the function for creating disputes:
 
 Note that ``createDispute`` function should be called by an *arbitrable*.
 
-We require caller to pay at least ``arbitrationCost(_extraData)``. We could send back the excess payment, but we omitted it for sake of simplicity.
+We require the caller to pay at least ``arbitrationCost(_extraData)``. We could send back the excess payment, but we omitted it for the sake of simplicity.
 
 Then, we create the dispute by pushing a new element to the array: ``disputes.push( ... )``.
-The ``push`` function returns resulting size of the array, thus we can use the return value of ``disputes.push( ... ) -1`` as ``disputeID`` starting from zero.
+The ``push`` function returns the resulting size of the array, thus we can use the return value of ``disputes.push( ... ) -1`` as ``disputeID`` starting from zero.
 Finally, we emit ``DisputeCreation`` as required in the standard.
 
 We also need to implement getters for ``status`` and ``ruling``:
@@ -66,7 +66,7 @@ We also need to implement getters for ``status`` and ``ruling``:
 
 
 
-Finally, we need a proxy function to call ``rule`` function of the ``Arbitrable`` contract. In this simple ``Arbitrator`` we will let one address to give rulings, the creator of the contract. So let's start by storing contract creator's address:
+Finally, we need a proxy function to call ``rule`` function of the ``Arbitrable`` contract. In this simple ``Arbitrator`` we will let one address, the creator of the contract, to give rulings. So let's start by storing contract creator's address:
 
 .. literalinclude:: ../contracts/examples/SimpleCentralizedArbitrator.sol
     :language: javascript
@@ -82,8 +82,8 @@ Then the proxy function:
     :emphasize-lines: 46-
 
 
-First we check the caller address, we should only let the ``owner`` execute this. Then we do sanity checks: given ruling should be chosen among the ``choices`` and it should not be possible to ``rule`` on an already solved dispute.
-Then we update ``ruling`` and ``status`` values of the dispute. Then we pay arbitration fee to the arbitrator (``owner``). And finally, we call ``rule`` function of the ``arbitrated`` to enforce the ruling.
+First we check the caller address, we should only let the ``owner`` execute this. Then we do sanity checks: the ruling given by the arbitrator should be chosen among the ``choices`` and it should not be possible to ``rule`` on an already solved dispute.
+Afterwards, we update ``ruling`` and ``status`` values of the dispute. Then we pay arbitration fee to the arbitrator (``owner``). Finally, we call ``rule`` function of the ``arbitrated`` to enforce the ruling.
 
 
 Lastly, appeal functions:
