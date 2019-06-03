@@ -10,12 +10,12 @@ ERC-1497: Evidence Standard
 In ``SimpleEscrow`` contract, we used a ``string`` to store the agreement between parties. Deployer could format that ``string`` anyway they like as
 there are many ways to signal the information about the agreement.
 
-Having a standard would allow interoperability. That's why *ERC-1497: Evidence Standard* describes a standard approach for this. It has two categories of information: evidence and meta-evidence.
+Instead, having a standard would allow interoperability. That's why *ERC-1497: Evidence Standard* describes a standard approach for this. It has two categories of information: evidence and meta-evidence.
 
 Evidence, as the name hints, is a piece of information to support a proposition.
 Meta-evidence is the information about the dispute itself: agreement, parties involved, the thing that is to be decided, ruling options etc.
 
-ERC-1497 brings three new events: MetaEvidence, Evidence and Dispute.
+ERC-1497 introduces three new events: MetaEvidence, Evidence and Dispute.
 
 .. image:: erc1497.png
 
@@ -122,23 +122,23 @@ Now, first lets's implement `IEvidence`:
   }
 
 
-And then, we will get rid of ``string agreement``.  Instead we need ``metaevidenceID``, ``metaevidence`` string and we have to emit ``MetaEvidence`` event.
+And then, we will get rid of ``string agreement``.  Instead we need ``uint metaevidenceID``, ``string _metaevidence`` that contains the URI to metaevidence JSON that is formatted according to the standard and we have to emit ``MetaEvidence`` event.
 
 .. literalinclude:: ../contracts/examples/SimpleEscrowWithERC1497.sol
     :language: javascript
-    :lines: 1-23,25-65,67-86
-    :emphasize-lines: 23,25,31
+    :lines: 1-24,26-65,67-86
+    :emphasize-lines: 24,26,32
 
 
 We set the identifier of metaevidence to constant zero, as there won't be multiple metaevidence for this contract. So any constant number would do the job. Then we emit ``MetaEvidence`` with provided
-metaevidence string. This string contains the URI from where the content of metaevidence can be fetched.
+``_metaevidence``. This string contains the URI from where the content of metaevidence can be fetched.
 
 Also we need to emit ``Dispute`` when we create a new dispute:
 
 .. literalinclude:: ../contracts/examples/SimpleEscrowWithERC1497.sol
     :language: javascript
     :lines: 1-86
-    :emphasize-lines: 24,66
+    :emphasize-lines: 25,67
 
 
 There will be only one dispute in this contract so we can use a constant zero for ``evidenceGroupID``.
@@ -147,7 +147,6 @@ Lastly, we need a function to let parties submit evidence:
 
 .. literalinclude:: ../contracts/examples/SimpleEscrowWithERC1497.sol
     :language: javascript
-    :lines: 1-93
-    :emphasize-lines: 88-92
+    :emphasize-lines: 90-95
 
-Congrats, now this arbitrable is ERC-1497 compatible!
+Congratulations, now this arbitrable is ERC-1497 compatible!

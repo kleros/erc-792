@@ -10,7 +10,7 @@ import "./IArbitrable.sol";
 /** @title Arbitrator
  *  Arbitrator abstract contract.
  *  When developing arbitrator contracts we need to:
- *  -Define the functions for dispute creation (createDispute) and appeal (appeal). Don't forget to store the arbitrated contract and the disputeID (which should be unique, use nbDisputes).
+ *  -Define the functions for dispute creation (createDispute) and appeal (appeal). Don't forget to store the arbitrated contract and the disputeID (which should be unique, may nbDisputes).
  *  -Define the functions for cost display (arbitrationCost and appealCost).
  *  -Allow giving rulings. For this a function must call arbitrable.rule(disputeID, ruling).
  */
@@ -19,18 +19,18 @@ contract Arbitrator {
     enum DisputeStatus {Waiting, Appealable, Solved}
 
 
-    /** @dev To be raised when a dispute is created.
+    /** @dev To be emitted when a dispute is created.
      *  @param _disputeID ID of the dispute.
      *  @param _arbitrable The contract which created the dispute.
      */
     event DisputeCreation(uint indexed _disputeID, IArbitrable indexed _arbitrable);
 
-    /** @dev To be raised when a dispute can be appealed.
+    /** @dev To be emitted when a dispute can be appealed.
      *  @param _disputeID ID of the dispute.
      */
     event AppealPossible(uint indexed _disputeID, IArbitrable indexed _arbitrable);
 
-    /** @dev To be raised when the current ruling is appealed.
+    /** @dev To be emitted when the current ruling is appealed.
      *  @param _disputeID ID of the dispute.
      *  @param _arbitrable The contract which created the dispute.
      */

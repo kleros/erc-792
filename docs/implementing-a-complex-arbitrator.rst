@@ -135,7 +135,7 @@ Now let's revisit cost functions:
 
 .. literalinclude:: ../contracts/examples/CentralizedArbitratorWithAppeal.sol
     :language: javascript
-    :emphasize-lines: 9, 18, 24, 28, 31-34, 44, 94
+    :emphasize-lines: 9, 18, 24, 28, 31-33, 44, 90
 
 
 

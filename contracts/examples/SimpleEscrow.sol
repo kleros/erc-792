@@ -20,7 +20,7 @@ contract SimpleEscrow is IArbitrable {
     uint public reclaimedAt;
 
     enum RulingOptions {RefusedToArbitrate, PayerWins, PayeeWins}
-    uint constant numberOfRulingOptions = 2;
+    uint constant numberOfRulingOptions = 2; // Notice that option 0 is reserved for RefusedToArbitrate.
 
     constructor(address payable _payee, Arbitrator _arbitrator, string memory _agreement) public payable {
         value = msg.value;

@@ -3,6 +3,9 @@ A Simple DApp
 *************
 
 .. note::
+  This tutorial requires basic Javascript programming skills and basic understanding of React Framework.
+
+.. note::
   You can find the finished React project `source code here <https://github.com/kleros/erc-792/tree/master/src>`_. You can test it `live here <https://simple-escrow.netlify.com/>`_.
 
 

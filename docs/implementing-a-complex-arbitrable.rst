@@ -20,7 +20,7 @@ Let's separate contract deployment and transaction creation:
 
 .. literalinclude:: ../contracts/examples/Escrow.sol
     :language: javascript
-    :emphasize-lines: 9-116
+    :emphasize-lines: 9-
 
 
 We first start by removing global state variables and defining ``TX`` struct. Each instance of this struct will represent a transaction thus will have transaction specific variables instead of globals.

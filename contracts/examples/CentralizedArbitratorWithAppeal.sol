@@ -25,7 +25,7 @@ contract CentralizedArbitratorWithAppeal is Arbitrator {
     }
 
     function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee) {
-        fee = arbitrationFee * (2 ** (disputes[_disputeID].appealCount +2));
+        fee = arbitrationFee * (2 ** (disputes[_disputeID].appealCount));
     }
 
     function setArbitrationCost(uint _newCost) public {

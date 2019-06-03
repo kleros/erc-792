@@ -60,10 +60,10 @@ contract SimpleCentralizedArbitrator is Arbitrator {
     }
 
     function appeal(uint _disputeID, bytes memory _extraData) public payable {
-
+        require(msg.value >= appealCost(_disputeID, _extraData), "Not enough ETH to cover arbitration costs.");
     }
 
     function appealPeriod(uint _disputeID) public view returns(uint start, uint end) {
-
-  }
+        return (0,0);
+    }
 }
