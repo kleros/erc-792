@@ -2,9 +2,6 @@
 Introduction
 ===============
 
-.. warning::
-  This tutorial is work-in-progress.
-
 .. note::
   This tutorial requires basic Solidity programming skills.
 
