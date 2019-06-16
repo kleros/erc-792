@@ -2,7 +2,7 @@
 ERC-1497: Evidence Standard
 ===============================
 
-.. note:: For complete specification of the standard you can read the original proposal `here <https://github.com/ethereum/EIPs/issues/1497>`_.
+.. note:: See the original proposal of the standard `here <https://github.com/ethereum/EIPs/issues/1497>`_.
 
 .. warning::
   Smart contracts in this tutorial are not intended for production but educational purposes. Beware of using them on main network.
@@ -25,6 +25,8 @@ ERC-1497 introduces three new events: MetaEvidence, Evidence and Dispute.
 * ``event MetaEvidence`` provides the context of the dispute, the question the arbitrators have to answer, the human readable meanings of rulings and specific modes of display for evidence. We use ``_metaEvidenceID`` to uniquely identify a piece of meta-evidence. This is necessary when there are multiple meta-evidence use-cases. ``_evidence`` contains the URI for meta-evidence JSON file.
 * ``event Evidence`` links a piece of evidence with an arbitrator, sending party and dispute. ``_evidence`` contains the URI for evidence JSON file.
 * ``event Dispute``  is raised when a dispute is created to link the proper meta-evidence and evidence group to the dispute. The event includes a reference to the arbitrator, a unique identifier for the dispute itself, the identifier to look up the meta-evidence event log and the identifier of the evidence group that can be used to look up all evidence submitted in the grouping.
+
+.. note:: See the `original proposal <https://github.com/ethereum/EIPs/issues/1497>`_ for standard evidence and meta-evidence JSON formats.
 
 Let's return to ``SimpleEscrow`` and refactor it to implement ERC-1497 interface. Recall ``SimpleEscrow``:
 
