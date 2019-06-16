@@ -5,7 +5,7 @@ Introduction
 .. note::
   This tutorial requires basic Solidity programming skills.
 
-.. note:: For complete specification of the standard you can read the original proposal `here <https://github.com/ethereum/EIPs/issues/792>`_.
+.. note:: See the original proposal of the standard `here <https://github.com/ethereum/EIPs/issues/792>`_.
 
 ERC-792: Arbitration Standard proposes a standard for arbitration on Ethereum. The standard has two types of smart contracts: ``Arbitrable`` and ``Arbitrator``.
 
