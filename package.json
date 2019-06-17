@@ -1,5 +1,5 @@
 {
-  "name": "erc-792",
+  "name": "@kleros/erc-792",
   "version": "1.0.0",
   "description": "ERC-792: Arbitration Standard",
   "main": "index.js",
