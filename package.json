@@ -1,6 +1,6 @@
 {
   "name": "@kleros/erc-792",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "ERC-792: Arbitration Standard",
   "main": "index.js",
   "repository": "https://github.com/kleros/erc-792",
