@@ -149,7 +149,7 @@ class Interact extends React.Component {
   }
 
   render() {
-    const { escrowAddress } = this.state
+    const { escrowAddress, fileInput } = this.state
     return (
       <Container className="container-fluid d-flex h-100 flex-column">
         <Card className="h-100 my-4 text-center" style={{ width: 'auto' }}>
@@ -224,7 +224,7 @@ class Interact extends React.Component {
                     className="text-left custom-file-label"
                     htmlFor="inputGroupFile04"
                   >
-                    Choose Evidence File
+                    {(fileInput && fileInput.name) || 'Choose evidence file'}
                   </label>
                 </div>
                 <div className="input-group-append">
