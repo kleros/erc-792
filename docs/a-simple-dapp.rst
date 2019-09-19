@@ -36,6 +36,16 @@ Scaffolding The Project And Installing Dependencies
 
 3. Inside the application directory, running ``yarn start`` should run your application now. By default it runs on `port 3000 <http://localhost:3000>`_.
 
+4. Add the following Bootstrap styleshet in ``index.html``
+
+.. code-block:: javascript
+
+  <link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+  crossorigin="anonymous"
+  />
 
 Ethereum Interface
 ******************
