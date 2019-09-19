@@ -33,10 +33,7 @@ Scaffolding The Project And Installing Dependencies
 
 2. Run ``yarn add web3@1.0.0-beta.37 react-bootstrap`` to install required dependencies. Using exact versions for web3 and ipfs-http-client is recommended.
 
-
-3. Inside the application directory, running ``yarn start`` should run your application now. By default it runs on `port 3000 <http://localhost:3000>`_.
-
-4. Add the following Bootstrap styleshet in ``index.html``
+3. Add the following Bootstrap styleshet in ``index.html``
 
 .. code-block:: javascript
 
@@ -46,6 +43,10 @@ Scaffolding The Project And Installing Dependencies
   integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
   crossorigin="anonymous"
   />
+
+4. Inside the application directory, running ``yarn start`` should run your application now. By default it runs on `port 3000 <http://localhost:3000>`_.
+
+
 
 Ethereum Interface
 ******************
