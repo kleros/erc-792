@@ -31,7 +31,7 @@ Scaffolding The Project And Installing Dependencies
 
 1. Run ``yarn create react-app a-simple-dapp`` to create a directory "a-simple-dapp" under your working directory and scaffold your application.
 
-2. Run ``yarn add ipfs-http-client@32.0.1 web3@1.0.0-beta.37 react-bootstrap`` to install required dependencies. Using exact versions for web3 and ipfs-http-client is recommended.
+2. Run ``yarn add web3@1.0.0-beta.37 react-bootstrap`` to install required dependencies. Using exact versions for web3 and ipfs-http-client is recommended.
 
 
 3. Inside the application directory, running ``yarn start`` should run your application now. By default it runs on `port 3000 <http://localhost:3000>`_.
