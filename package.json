@@ -8,13 +8,12 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "@kleros/kathari": "^0.23.0",
-    "truffle": "^5.0.15",
     "ipfs-http-client": "32.0.1",
     "react": "16.8.6",
     "react-bootstrap": "1.0.0-beta.8",
     "react-dom": "16.8.6",
     "react-scripts": "3.0.1",
+    "truffle": "^5.0.15",
     "web3": "1.0.0-beta.37"
   },
   "scripts": {
