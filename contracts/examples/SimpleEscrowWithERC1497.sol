@@ -1,14 +1,14 @@
 pragma solidity ^0.5;
 
 import "../IArbitrable.sol";
-import "../Arbitrator.sol";
+import "../IArbitrator.sol";
 import "../erc-1497/IEvidence.sol";
 
 contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     address payable public payer = msg.sender;
     address payable public payee;
     uint public value;
-    Arbitrator public arbitrator;
+    IArbitrator public arbitrator;
     uint constant public reclamationPeriod = 3 minutes;
     uint constant public arbitrationFeeDepositPeriod = 3 minutes;
 
@@ -24,7 +24,7 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     uint constant metaevidenceID = 0;
     uint constant evidenceGroupID = 0;
 
-    constructor(address payable _payee, Arbitrator _arbitrator, string memory _metaevidence) public payable {
+    constructor(address payable _payee, IArbitrator _arbitrator, string memory _metaevidence) public payable {
         value = msg.value;
         payee = _payee;
         arbitrator = _arbitrator;

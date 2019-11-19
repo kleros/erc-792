@@ -1,8 +1,8 @@
 pragma solidity ^0.5;
 
-import "../Arbitrator.sol";
+import "../IArbitrator.sol";
 
-contract SimpleCentralizedArbitrator is Arbitrator {
+contract SimpleCentralizedArbitrator is IArbitrator {
 
     address public owner = msg.sender;
 

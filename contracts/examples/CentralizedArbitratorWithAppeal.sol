@@ -1,8 +1,8 @@
 pragma solidity ^0.5;
 
-import "../Arbitrator.sol";
+import "../IArbitrator.sol";
 
-contract CentralizedArbitratorWithAppeal is Arbitrator {
+contract CentralizedArbitratorWithAppeal is IArbitrator {
 
     address public owner = msg.sender;
     uint constant appealWindow = 3 minutes;

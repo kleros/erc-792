@@ -1,6 +1,6 @@
 pragma solidity ^0.5;
 
-import "../Arbitrator.sol";
+import "../IArbitrator.sol";
 
 /** @title IEvidence
  *  ERC-1497: Evidence Standard
@@ -19,7 +19,7 @@ interface IEvidence {
      *  @param _party The address of the party submiting the evidence. Note that 0x0 refers to evidence not submitted by any party.
      *  @param _evidence A URI to the evidence JSON file whose name should be its keccak256 hash followed by .json.
      */
-    event Evidence(Arbitrator indexed _arbitrator, uint indexed _evidenceGroupID, address indexed _party, string _evidence);
+    event Evidence(IArbitrator indexed _arbitrator, uint indexed _evidenceGroupID, address indexed _party, string _evidence);
 
     /** @dev To be emitted when a dispute is created to link the correct meta-evidence to the disputeID.
      *  @param _arbitrator The arbitrator of the contract.
@@ -27,6 +27,6 @@ interface IEvidence {
      *  @param _metaEvidenceID Unique identifier of meta-evidence.
      *  @param _evidenceGroupID Unique identifier of the evidence group that is linked to this dispute.
      */
-    event Dispute(Arbitrator indexed _arbitrator, uint indexed _disputeID, uint _metaEvidenceID, uint _evidenceGroupID);
+    event Dispute(IArbitrator indexed _arbitrator, uint indexed _disputeID, uint _metaEvidenceID, uint _evidenceGroupID);
 
 }

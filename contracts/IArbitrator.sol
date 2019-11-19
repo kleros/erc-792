@@ -14,7 +14,7 @@ import "./IArbitrable.sol";
  *  -Define the functions for cost display (arbitrationCost and appealCost).
  *  -Allow giving rulings. For this a function must call arbitrable.rule(disputeID, ruling).
  */
-contract Arbitrator {
+contract IArbitrator {
 
     enum DisputeStatus {Waiting, Appealable, Solved}
 

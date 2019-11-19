@@ -1,7 +1,7 @@
 pragma solidity ^0.5;
 
 import "../IArbitrable.sol";
-import "../Arbitrator.sol";
+import "../IArbitrator.sol";
 import "../erc-1497/IEvidence.sol";
 
 contract Escrow is IArbitrable, IEvidence {
@@ -16,7 +16,7 @@ contract Escrow is IArbitrable, IEvidence {
     struct TX {
         address payable payer;
         address payable payee;
-        Arbitrator arbitrator;
+        IArbitrator arbitrator;
         Status status;
         uint value;
         uint disputeID;
@@ -31,7 +31,7 @@ contract Escrow is IArbitrable, IEvidence {
     TX[] public txs;
     mapping (uint => uint) disputeIDtoTXID;
 
-    function newTransaction(address payable _payee, Arbitrator _arbitrator, string memory _metaevidence, uint _reclamationPeriod, uint _arbitrationFeeDepositPeriod) public payable returns (uint txID){
+    function newTransaction(address payable _payee, IArbitrator _arbitrator, string memory _metaevidence, uint _reclamationPeriod, uint _arbitrationFeeDepositPeriod) public payable returns (uint txID){
         emit MetaEvidence(txs.length, _metaevidence);
 
         return txs.push(TX({
@@ -85,7 +85,7 @@ contract Escrow is IArbitrable, IEvidence {
         TX storage tx = txs[_txID];
 
         require(tx.status == Status.Reclaimed, "Transaction is not in Reclaimed state.");
-        
+
         tx.payeeFeeDeposit = msg.value;
         tx.disputeID = tx.arbitrator.createDispute.value(msg.value)(numberOfRulingOptions, "");
         tx.status = Status.Disputed;

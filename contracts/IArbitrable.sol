@@ -5,7 +5,7 @@
 
 pragma solidity ^0.5;
 
-import "./Arbitrator.sol";
+import "./IArbitrator.sol";
 
 /** @title IArbitrable
  *  Arbitrable interface.
@@ -20,7 +20,7 @@ interface IArbitrable {
      *  @param _disputeID ID of the dispute in the Arbitrator contract.
      *  @param _ruling The ruling which was given.
      */
-    event Ruling(Arbitrator indexed _arbitrator, uint indexed _disputeID, uint _ruling);
+    event Ruling(IArbitrator indexed _arbitrator, uint indexed _disputeID, uint _ruling);
 
     /** @dev Give a ruling for a dispute. Must be called by the arbitrator.
      *  The purpose of this function is to ensure that the address calling it has the right to rule on the contract.

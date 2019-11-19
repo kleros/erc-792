@@ -1,13 +1,13 @@
 pragma solidity ^0.5;
 
 import "../IArbitrable.sol";
-import "../Arbitrator.sol";
+import "../IArbitrator.sol";
 
 contract SimpleEscrow is IArbitrable {
     address payable public payer = msg.sender;
     address payable public payee;
     uint public value;
-    Arbitrator public arbitrator;
+    IArbitrator public arbitrator;
     string public agreement;
     uint public createdAt;
     uint constant public reclamationPeriod = 3 minutes;
@@ -22,7 +22,7 @@ contract SimpleEscrow is IArbitrable {
     enum RulingOptions {RefusedToArbitrate, PayerWins, PayeeWins}
     uint constant numberOfRulingOptions = 2; // Notice that option 0 is reserved for RefusedToArbitrate.
 
-    constructor(address payable _payee, Arbitrator _arbitrator, string memory _agreement) public payable {
+    constructor(address payable _payee, IArbitrator _arbitrator, string memory _agreement) public payable {
         value = msg.value;
         payee = _payee;
         arbitrator = _arbitrator;
