@@ -1,9 +1,4 @@
-/**
- *  @title IArbitrable
- *  @author Enrique Piqueras - <enrique@kleros.io>
- */
-
-pragma solidity ^0.5;
+pragma solidity >=0.6;
 
 import "./IArbitrator.sol";
 

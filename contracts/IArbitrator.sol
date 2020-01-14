@@ -1,9 +1,4 @@
-/**
- *  @title Arbitrator
- *  @author Clément Lesaege - <clement@lesaege.com>
- */
-
-pragma solidity ^0.5;
+pragma solidity >=0.6;
 
 import "./IArbitrable.sol";
 
@@ -65,7 +60,9 @@ interface IArbitrator {
 
     /** @dev Compute the start and end of the dispute's current or next appeal period, if possible. If not known or appeal is impossible: should return (0, 0).
      *  @param _disputeID ID of the dispute.
-     *  @return The start and end of the period.
+     *  @return start The start of the period.
+     *  @return end The end of the period.
+     *
      */
     function appealPeriod(uint _disputeID) external view returns(uint start, uint end);
 

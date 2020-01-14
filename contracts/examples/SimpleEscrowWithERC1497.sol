@@ -1,4 +1,4 @@
-pragma solidity ^0.5;
+pragma solidity >=0.6;
 
 import "../IArbitrable.sol";
 import "../IArbitrator.sol";
@@ -67,7 +67,7 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
         emit Dispute(arbitrator, disputeID, metaevidenceID, evidenceGroupID);
     }
 
-    function rule(uint _disputeID, uint _ruling) public {
+    function rule(uint _disputeID, uint _ruling) public override {
         require(msg.sender == address(arbitrator), "Only the arbitrator can execute this.");
         require(status == Status.Disputed, "There should be dispute to execute a ruling.");
         require(_ruling <= numberOfRulingOptions, "Ruling out of bounds!");

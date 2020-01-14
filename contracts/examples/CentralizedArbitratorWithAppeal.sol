@@ -1,4 +1,4 @@
-pragma solidity ^0.5;
+pragma solidity >=0.6;
 
 import "../IArbitrator.sol";
 
@@ -20,11 +20,11 @@ contract CentralizedArbitratorWithAppeal is IArbitrator {
 
     Dispute[] public disputes;
 
-    function arbitrationCost(bytes memory _extraData) public view returns(uint fee) {
+    function  arbitrationCost(bytes memory _extraData) public view override returns(uint fee) {
         fee = arbitrationFee;
     }
 
-    function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee) {
+    function appealCost(uint _disputeID, bytes memory _extraData) public view override returns(uint fee) {
         fee = arbitrationFee * (2 ** (disputes[_disputeID].appealCount));
     }
 
@@ -32,10 +32,10 @@ contract CentralizedArbitratorWithAppeal is IArbitrator {
         arbitrationFee = _newCost;
     }
 
-    function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
+    function createDispute(uint _choices, bytes memory _extraData) public payable override returns(uint disputeID) {
         require(msg.value >= arbitrationCost(_extraData), "Not enough ETH to cover arbitration costs.");
 
-        disputeID = disputes.push(Dispute({
+        disputes.push(Dispute({
           arbitrated: IArbitrable(msg.sender),
           choices: _choices,
           ruling: uint(-1),
@@ -43,12 +43,14 @@ contract CentralizedArbitratorWithAppeal is IArbitrator {
           appealPeriodStart: 0,
           appealPeriodEnd: 0,
           appealCount: 0
-          })) -1;
+          }));
 
         emit DisputeCreation(disputeID, IArbitrable(msg.sender));
+
+        disputeID = disputes.length;
     }
 
-    function disputeStatus(uint _disputeID) public view returns(DisputeStatus status) {
+    function disputeStatus(uint _disputeID) public view override returns(DisputeStatus status) {
         Dispute storage dispute = disputes[_disputeID];
         if (disputes[_disputeID].status == DisputeStatus.Appealable && now >= dispute.appealPeriodEnd)
             return DisputeStatus.Solved;
@@ -56,7 +58,7 @@ contract CentralizedArbitratorWithAppeal is IArbitrator {
             return disputes[_disputeID].status;
     }
 
-    function currentRuling(uint _disputeID) public view returns(uint ruling) {
+    function currentRuling(uint _disputeID) public view override returns(uint ruling) {
         ruling = disputes[_disputeID].ruling;
     }
 
@@ -85,7 +87,7 @@ contract CentralizedArbitratorWithAppeal is IArbitrator {
         dispute.arbitrated.rule(_disputeID, dispute.ruling);
     }
 
-    function appeal(uint _disputeID, bytes memory _extraData) public payable {
+    function appeal(uint _disputeID, bytes memory _extraData) public payable override {
         Dispute storage dispute = disputes[_disputeID];
         dispute.appealCount++;
 
@@ -99,7 +101,7 @@ contract CentralizedArbitratorWithAppeal is IArbitrator {
         emit AppealDecision(_disputeID, dispute.arbitrated);
     }
 
-    function appealPeriod(uint _disputeID) public view returns(uint start, uint end) {
+    function appealPeriod(uint _disputeID) public view override returns(uint start, uint end) {
         Dispute storage dispute = disputes[_disputeID];
 
         return (dispute.appealPeriodStart, dispute.appealPeriodEnd);

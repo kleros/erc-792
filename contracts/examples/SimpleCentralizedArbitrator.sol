@@ -1,4 +1,4 @@
-pragma solidity ^0.5;
+pragma solidity >=0.6;
 
 import "../IArbitrator.sol";
 
@@ -15,32 +15,34 @@ contract SimpleCentralizedArbitrator is IArbitrator {
 
     Dispute[] public disputes;
 
-    function arbitrationCost(bytes memory _extraData) public view returns(uint fee) {
+    function arbitrationCost(bytes memory _extraData) public view override returns(uint fee) {
         fee = 0.1 ether;
     }
 
-    function appealCost(uint _disputeID, bytes memory _extraData) public view returns(uint fee) {
+    function appealCost(uint _disputeID, bytes memory _extraData) public view override returns(uint fee) {
         fee = 2**250; // An unaffordable amount which practically avoids appeals.
     }
 
-    function createDispute(uint _choices, bytes memory _extraData) public payable returns(uint disputeID) {
+    function createDispute(uint _choices, bytes memory _extraData) public payable override returns(uint disputeID) {
         require(msg.value >= arbitrationCost(_extraData), "Not enough ETH to cover arbitration costs.");
 
-        disputeID = disputes.push(Dispute({
+        disputes.push(Dispute({
           arbitrated: IArbitrable(msg.sender),
           choices: _choices,
           ruling: uint(-1),
           status: DisputeStatus.Waiting
-          })) -1;
+          }));
 
         emit DisputeCreation(disputeID, IArbitrable(msg.sender));
+
+        disputeID = disputes.length;
     }
 
-    function disputeStatus(uint _disputeID) public view returns(DisputeStatus status) {
+    function disputeStatus(uint _disputeID) public view override returns(DisputeStatus status) {
         status = disputes[_disputeID].status;
     }
 
-    function currentRuling(uint _disputeID) public view returns(uint ruling) {
+    function currentRuling(uint _disputeID) public view override returns(uint ruling) {
         ruling = disputes[_disputeID].ruling;
     }
 
@@ -59,11 +61,11 @@ contract SimpleCentralizedArbitrator is IArbitrator {
         dispute.arbitrated.rule(_disputeID, _ruling);
     }
 
-    function appeal(uint _disputeID, bytes memory _extraData) public payable {
+    function appeal(uint _disputeID, bytes memory _extraData) public payable override {
         require(msg.value >= appealCost(_disputeID, _extraData), "Not enough ETH to cover arbitration costs.");
     }
 
-    function appealPeriod(uint _disputeID) public view returns(uint start, uint end) {
+    function appealPeriod(uint _disputeID) public view override returns(uint start, uint end) {
         return (0,0);
     }
 }
