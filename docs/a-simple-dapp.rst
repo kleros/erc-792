@@ -154,4 +154,4 @@ Interact
 Arbitrator Side
 ###############
 
-To interact with an arbitrator, we can use `Centralized Arbitrator Dashboard <https://centralizedarbitrator.fyi>`_. It can load arbitrators with a given address to interact with, also can deploy an `AutoAppealableArbitrator <https://github.com/kleros/kleros-interaction/blob/master/contracts/standard/arbitration/AutoAppealableArbitrator.sol>`_ which is very similar to the one we developed in the tutorials.
+To interact with an arbitrator, we can use `Centralized Arbitrator Dashboard <https://centralizedarbitrator.netlify.com>`_. It can load arbitrators with a given address to interact with, also can deploy an `AutoAppealableArbitrator <https://github.com/kleros/kleros-interaction/blob/master/contracts/standard/arbitration/AutoAppealableArbitrator.sol>`_ which is very similar to the one we developed in the tutorials.
