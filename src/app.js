@@ -186,7 +186,7 @@ class App extends React.Component {
         </Row>
         <Row>
           <Col>
-            <Form action="https://centralizedarbitrator.fyi">
+            <Form action="https://centralizedarbitrator.netlify.com">
               <Jumbotron className="m-5 text-center">
                 <h1>Need to interact with your arbitrator contract?</h1>
                 <p>
