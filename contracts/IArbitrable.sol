@@ -1,3 +1,11 @@
+ /**
+ *  @authors: [@ferittuncer]
+ *  @reviewers: [@remedcu]
+ *  @auditors: []
+ *  @bounties: []
+ *  @deployments: []
+ */
+
 pragma solidity >=0.6;
 
 import "./IArbitrator.sol";
