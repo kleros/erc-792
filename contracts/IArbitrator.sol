@@ -21,7 +21,6 @@ interface IArbitrator {
 
     enum DisputeStatus {Waiting, Appealable, Solved}
 
-
     /** @dev To be emitted when a dispute is created.
      *  @param _disputeID ID of the dispute.
      *  @param _arbitrable The contract which created the dispute.
@@ -30,6 +29,7 @@ interface IArbitrator {
 
     /** @dev To be emitted when a dispute can be appealed.
      *  @param _disputeID ID of the dispute.
+     *  @param _arbitrable The contract which created the dispute.
      */
     event AppealPossible(uint indexed _disputeID, IArbitrable indexed _arbitrable);
 
@@ -70,7 +70,6 @@ interface IArbitrator {
      *  @param _disputeID ID of the dispute.
      *  @return start The start of the period.
      *  @return end The end of the period.
-     *
      */
     function appealPeriod(uint _disputeID) external view returns(uint start, uint end);
 
