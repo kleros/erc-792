@@ -1,6 +1,6 @@
 {
   "name": "@kleros/erc-792",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "ERC-792: Arbitration Standard",
   "main": "index.js",
   "repository": "https://github.com/kleros/erc-792",
@@ -22,6 +22,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "files": [
+    "build",
+    "contracts"
+  ],
   "eslintConfig": {
     "extends": "react-app"
   },
