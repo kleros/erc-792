@@ -154,4 +154,13 @@ Interact
 Arbitrator Side
 ###############
 
-To interact with an arbitrator, we can use `Centralized Arbitrator Dashboard <https://centralizedarbitrator.netlify.com>`_. It can load arbitrators with a given address to interact with, also can deploy an `AutoAppealableArbitrator <https://github.com/kleros/kleros-interaction/blob/master/contracts/standard/arbitration/AutoAppealableArbitrator.sol>`_ which is very similar to the one we developed in the tutorials.
+To interact with an arbitrator, we can use `Centralized Arbitrator Dashboard <https://centralizedarbitrator.netlify.com>`_. It let's setting up an arbitrator easily and provides UI to interact with, very useful for debugging and testing arbitrable implementations. As arbitrator, it deploys
+ `AutoAppealableArbitrator <https://github.com/kleros/kleros-interaction/blob/master/contracts/standard/arbitration/AutoAppealableArbitrator.sol>`_ which is very similar to the one we developed in the tutorials.
+
+To Use Centralized Arbitrator Dashboard (CAD):
+
+1. Deploy a new arbitrator by specifying arbitration fee, like `0.001` Ether.
+2. Copy the arbitrator address and use this address as the arbitrator, in your arbitrable contract.
+3. Create a dispute on your arbitrable contract.
+4. Go back to CAD, select the arbitrator you created in the first step, by entering the contract address.
+5. Now you should be able to see the dispute you created. You can give rulings to it using CAD.
