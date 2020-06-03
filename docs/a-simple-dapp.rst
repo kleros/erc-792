@@ -164,6 +164,6 @@ To Use Centralized Arbitrator Dashboard (CAD):
 4. Go back to CAD, select the arbitrator you created in the first step, by entering the contract address.
 5. Now you should be able to see the dispute you created. You can give rulings to it using CAD.
 
-Alternatively, you can use `Kleros Arbitrator on Kovan network <https://kovan.etherscan.io/address/0x60b2abfdfad9c0873242f59f2a8c32a3cc682f80>`_ on Kovan network for testing. In that case, use Kleros Arbitrator address on Kovan in your arbitrable contract, then simply go to court.kleros.io and switch your network to Kovan. You will need PNK token for Kovan network, which you can buy from https://court.kleros.io/tokens.
+Alternatively, you can use `Kleros Arbitrator on Kovan network <https://kovan.etherscan.io/address/0x60b2abfdfad9c0873242f59f2a8c32a3cc682f80>`_ for testing. In that case, use Kleros Arbitrator address on Kovan in your arbitrable contract, then simply go to court.kleros.io and switch your network to Kovan. You will need PNK token for Kovan network, which you can buy from https://court.kleros.io/tokens.
 
 Finally, when your arbitrable contract is ready, use `Kleros Arbitrator on main network` <https://etherscan.io/address/0x988b3a538b618c7a603e1c11ab82cd16dbe28069#code>`_ to integrate with Kleros.
