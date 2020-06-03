@@ -158,7 +158,7 @@ To interact with an arbitrator, we can use `Centralized Arbitrator Dashboard <ht
 
 To Use Centralized Arbitrator Dashboard (CAD):
 
-1. Deploy a new arbitrator by specifying arbitration fee, like `0.001` Ether.
+1. Deploy a new arbitrator by specifying arbitration fee, choose a tiny amount for convenience, like `0.001` Ether.
 2. Copy the arbitrator address and use this address as the arbitrator, in your arbitrable contract.
 3. Create a dispute on your arbitrable contract.
 4. Go back to CAD, select the arbitrator you created in the first step, by entering the contract address.
