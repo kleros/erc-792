@@ -154,8 +154,7 @@ Interact
 Arbitrator Side
 ###############
 
-To interact with an arbitrator, we can use `Centralized Arbitrator Dashboard <https://centralizedarbitrator.netlify.com>`_. It let's setting up an arbitrator easily and provides UI to interact with, very useful for debugging and testing arbitrable implementations. As arbitrator, it deploys
- `AutoAppealableArbitrator <https://github.com/kleros/kleros-interaction/blob/master/contracts/standard/arbitration/AutoAppealableArbitrator.sol>`_ which is very similar to the one we developed in the tutorials.
+To interact with an arbitrator, we can use `Centralized Arbitrator Dashboard <https://centralizedarbitrator.netlify.com>`_. It let's setting up an arbitrator easily and provides UI to interact with, very useful for debugging and testing arbitrable implementations. As arbitrator, it deploys `AutoAppealableArbitrator <https://github.com/kleros/kleros-interaction/blob/master/contracts/standard/arbitration/AutoAppealableArbitrator.sol>`_ which is very similar to the one we developed in the tutorials.
 
 To Use Centralized Arbitrator Dashboard (CAD):
 
@@ -164,3 +163,5 @@ To Use Centralized Arbitrator Dashboard (CAD):
 3. Create a dispute on your arbitrable contract.
 4. Go back to CAD, select the arbitrator you created in the first step, by entering the contract address.
 5. Now you should be able to see the dispute you created. You can give rulings to it using CAD.
+
+Alternatively, you can use `Kleros Arbitrator <https://kovan.etherscan.io/address/0x60b2abfdfad9c0873242f59f2a8c32a3cc682f80>`_ on Kovan network for debugging purposes. In that case, simply go to court.kleros.io and switch your network to Kovan. You will need PNK token for Kovan network, which you can buy from https://court.kleros.io/tokens.
