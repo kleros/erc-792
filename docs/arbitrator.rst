@@ -3,7 +3,7 @@ Arbitrator Interface
 ====================
 
 
-.. literalinclude:: ../contracts/Arbitrator.sol
+.. literalinclude:: ../contracts/IArbitrator.sol
     :language: javascript
 
 
