@@ -33,9 +33,8 @@ contract SimpleCentralizedArbitrator is IArbitrator {
           status: DisputeStatus.Waiting
           }));
 
+        disputeID = disputes.length -1;
         emit DisputeCreation(disputeID, IArbitrable(msg.sender));
-
-        disputeID = disputes.length;
     }
 
     function disputeStatus(uint _disputeID) public view override returns(DisputeStatus status) {

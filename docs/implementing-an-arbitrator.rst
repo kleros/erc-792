@@ -61,8 +61,8 @@ We also need to implement getters for ``status`` and ``ruling``:
 
 .. literalinclude:: ../contracts/examples/SimpleCentralizedArbitrator.sol
     :language: javascript
-    :lines: 1-5,8-45
-    :emphasize-lines: 36-43
+    :lines: 1-5,8-50
+    :emphasize-lines: 36-48
 
 
 
