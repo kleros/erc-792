@@ -61,7 +61,7 @@ First, let's implement the appeal:
 
       function disputeStatus(uint _disputeID) public view returns(DisputeStatus status) {
           Dispute storage dispute = disputes[_disputeID];
-          if (disputes[_disputeID].status == DisputeStatus.Appealable && now >= dispute.appealPeriodEnd)
+          if (disputes[_disputeID].status == DisputeStatus.Appealable && block.timestamp >= dispute.appealPeriodEnd)
               return DisputeStatus.Solved;
           else
               return disputes[_disputeID].status;
@@ -81,14 +81,14 @@ First, let's implement the appeal:
 
           dispute.ruling = _ruling;
           dispute.status = DisputeStatus.Appealable;
-          dispute.appealPeriodStart = now;
+          dispute.appealPeriodStart = block.timestamp;
           dispute.appealPeriodEnd = dispute.appealPeriodStart + appealWindow;
       }
 
       function executeRuling(uint _disputeID) public {
           Dispute storage dispute = disputes[_disputeID];
           require(dispute.status == DisputeStatus.Appealable, "The dispute must be appealable.");
-          require(now >= dispute.appealPeriodEnd, "The dispute must be executed after its appeal period has ended.");
+          require(block.timestamp >= dispute.appealPeriodEnd, "The dispute must be executed after its appeal period has ended.");
 
           dispute.status = DisputeStatus.Solved;
           dispute.arbitrated.rule(_disputeID, dispute.ruling);
@@ -100,7 +100,7 @@ First, let's implement the appeal:
           super.appeal(_disputeID, _extraData);
 
           require(dispute.status == DisputeStatus.Appealable, "The dispute must be appealable.");
-          require(now < dispute.appealPeriodEnd, "The appeal must occur before the end of the appeal period.");
+          require(block.timestamp < dispute.appealPeriodEnd, "The appeal must occur before the end of the appeal period.");
 
           dispute.status = DisputeStatus.Waiting;
       }

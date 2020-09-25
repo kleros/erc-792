@@ -62,19 +62,19 @@ Now, first let's implement `IEvidence`:
 
       enum RulingOptions {PayerWins, PayeeWins, Count}
 
-      constructor(address payable _payee, Arbitrator _arbitrator, string memory _agreement) public payable {
+      constructor(address payable _payee, Arbitrator _arbitrator, string memory _agreement) payable {
           value = msg.value;
           payee = _payee;
           arbitrator = _arbitrator;
           agreement = _agreement;
-          createdAt = now;
+          createdAt = block.timestamp;
       }
 
       function releaseFunds() public {
         require(status == Status.Initial, "Transaction is not in initial status.");
 
         if(msg.sender != payer)
-            require(now - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
+            require(block.timestamp - createdAt > reclamationPeriod, "Payer still has time to reclaim.");
 
         status = Status.Resolved;
         payee.send(value);
@@ -85,21 +85,21 @@ Now, first let's implement `IEvidence`:
           require(msg.sender == payer, "Only the payer can reclaim the funds.");
 
           if(status == Status.Reclaimed){
-              require(now - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
+              require(block.timestamp - reclaimedAt > arbitrationFeeDepositPeriod, "Payee still has time to deposit arbitration fee.");
               payer.send(address(this).balance);
               status = Status.Resolved;
           }
           else{
-            require(now - createdAt < reclamationPeriod, "Reclamation period ended.");
+            require(block.timestamp - createdAt < reclamationPeriod, "Reclamation period ended.");
             require(msg.value == arbitrator.arbitrationCost(""), "Can't reclaim funds without depositing arbitration fee.");
-            reclaimedAt = now;
+            reclaimedAt = block.timestamp;
             status = Status.Reclaimed;
           }
       }
 
       function depositArbitrationFeeForPayee() public payable {
           require(status == Status.Reclaimed, "Payer didn't reclaim, nothing to dispute.");
-          arbitrator.createDispute.value(msg.value)(uint(RulingOptions.Count), "");
+          arbitrator.createDispute{value: msg.value}(uint(RulingOptions.Count), "");
           status = Status.Disputed;
       }
 
@@ -114,12 +114,12 @@ Now, first let's implement `IEvidence`:
 
       function remainingTimeToReclaim() public view returns (uint) {
           if(status != Status.Initial) revert("Transaction is not in initial state.");
-          return (createdAt + reclamationPeriod - now) > reclamationPeriod ? 0 : (createdAt + reclamationPeriod - now);
+          return (createdAt + reclamationPeriod - block.timestamp) > reclamationPeriod ? 0 : (createdAt + reclamationPeriod - block.timestamp);
       }
 
       function remainingTimeToDepositArbitrationFee() public view returns (uint) {
           if (status != Status.Reclaimed) revert("Funds are not reclaimed.");
-          return (reclaimedAt + arbitrationFeeDepositPeriod - now) > arbitrationFeeDepositPeriod ? 0 : (reclaimedAt + arbitrationFeeDepositPeriod - now);
+          return (reclaimedAt + arbitrationFeeDepositPeriod - block.timestamp) > arbitrationFeeDepositPeriod ? 0 : (reclaimedAt + arbitrationFeeDepositPeriod - block.timestamp);
       }
   }
 
