@@ -3,27 +3,33 @@ module.exports = {
   // to customize your Truffle configuration!
   compilers: {
     solc: {
-      version: "0.6.1"
-    }
+      version: "0.7.1",
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 200,
+        },
+      },
+    },
   },
   mocha: {
     reporter: "eth-gas-reporter",
     reporterOptions: {
-      currency: "USD"
-    }
+      currency: "USD",
+    },
   },
 
   networks: {
     development: {
       host: "localhost",
       network_id: "*",
-      port: 8545
+      port: 8545,
     },
     kovan: {
       confirmations: 2,
       gas: 4200000,
       gasPrice: 20000000000,
-      network_id: 42
-    }
-  }
+      network_id: 42,
+    },
+  },
 };
