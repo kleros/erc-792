@@ -60,7 +60,7 @@ class Interact extends React.Component {
       this.setState({ value: 'ERROR' })
     }
 
-    if (status == 0)
+    if (Number(status) === 0)
       try {
         this.setState({
           remainingTimeToReclaim: await this.props.remainingTimeToReclaimCallback(
@@ -72,7 +72,7 @@ class Interact extends React.Component {
         this.setState({ status: 'ERROR' })
       }
 
-    if (status == 1)
+    if (Number(status) === 1)
       try {
         this.setState({
           remainingTimeToDepositArbitrationFee: await this.props.remainingTimeToDepositArbitrationFeeCallback(
