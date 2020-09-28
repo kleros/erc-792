@@ -1,6 +1,6 @@
 /**
  * @authors: [@ferittuncer, @hbarcelos]
- * @reviewers: [@remedcu*]
+ * @reviewers: [@remedcu]
  * @auditors: []
  * @bounties: []
  * @deployments: []
