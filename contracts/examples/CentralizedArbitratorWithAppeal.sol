@@ -61,7 +61,7 @@ contract CentralizedArbitratorWithAppeal is IArbitrator {
 
         emit DisputeCreation(disputeID, IArbitrable(msg.sender));
 
-        disputeID = disputes.length;
+        disputeID = disputes.length - 1;
     }
 
     function disputeStatus(uint256 _disputeID) public override view returns (DisputeStatus status) {
