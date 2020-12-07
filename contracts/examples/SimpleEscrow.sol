@@ -94,17 +94,17 @@ contract SimpleEscrow is IArbitrable {
     }
 
     function remainingTimeToReclaim() public view returns (uint256) {
-        if (status != Status.Initial) revert("Transaction is not in Initial state.");
+        require(status == Status.Initial, "Transaction is not in Initial state.");
         return
-            (createdAt + reclamationPeriod - block.timestamp) > reclamationPeriod
+            (block.timestamp - createdAt) > reclamationPeriod
                 ? 0
                 : (createdAt + reclamationPeriod - block.timestamp);
     }
 
     function remainingTimeToDepositArbitrationFee() public view returns (uint256) {
-        if (status != Status.Reclaimed) revert("Transaction is not in Reclaimed state.");
+        require(status == Status.Reclaimed, "Transaction is not in Reclaimed state.");
         return
-            (reclaimedAt + arbitrationFeeDepositPeriod - block.timestamp) > arbitrationFeeDepositPeriod
+            (block.timestamp - reclaimedAt) > arbitrationFeeDepositPeriod
                 ? 0
                 : (reclaimedAt + arbitrationFeeDepositPeriod - block.timestamp);
     }
