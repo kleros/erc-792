@@ -152,9 +152,9 @@ contract Escrow is IArbitrable, IEvidence {
     function remainingTimeToReclaim(uint256 _txID) public view returns (uint256) {
         TX storage transaction = txs[_txID];
 
-        if (transaction.status != Status.Initial) revert("Transaction is not in Initial state.");
+        require(transaction.status == Status.Initial, "Transaction is not in Initial state.");
         return
-            (transaction.createdAt + transaction.reclamationPeriod - block.timestamp) > transaction.reclamationPeriod
+            (block.timestamp - transaction.createdAt) > transaction.reclamationPeriod
                 ? 0
                 : (transaction.createdAt + transaction.reclamationPeriod - block.timestamp);
     }
@@ -162,10 +162,9 @@ contract Escrow is IArbitrable, IEvidence {
     function remainingTimeToDepositArbitrationFee(uint256 _txID) public view returns (uint256) {
         TX storage transaction = txs[_txID];
 
-        if (transaction.status != Status.Reclaimed) revert("Transaction is not in Reclaimed state.");
+        require(transaction.status == Status.Reclaimed, "Transaction is not in Reclaimed state.");
         return
-            (transaction.reclaimedAt + transaction.arbitrationFeeDepositPeriod - block.timestamp) >
-                transaction.arbitrationFeeDepositPeriod
+            (block.timestamp - transaction.reclaimedAt) > transaction.arbitrationFeeDepositPeriod
                 ? 0
                 : (transaction.reclaimedAt + transaction.arbitrationFeeDepositPeriod - block.timestamp);
     }
