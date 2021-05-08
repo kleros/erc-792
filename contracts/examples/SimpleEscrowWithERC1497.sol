@@ -17,8 +17,8 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
     address payable public payee;
     uint256 public value;
     IArbitrator public arbitrator;
-    uint256 public constant reclamationPeriod = 3 minutes;
-    uint256 public constant arbitrationFeeDepositPeriod = 3 minutes;
+    uint256 public constant reclamationPeriod = 3 minutes; // Timeframe is short on purpose to be able to test it quickly. Not for production use.
+    uint256 public constant arbitrationFeeDepositPeriod = 3 minutes; // Timeframe is short on purpose to be able to test it quickly. Not for production use.
 
     uint256 public createdAt;
     uint256 public reclaimedAt;
