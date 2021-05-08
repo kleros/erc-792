@@ -18,8 +18,8 @@ contract SimpleEscrow is IArbitrable {
     IArbitrator public arbitrator;
     string public agreement;
     uint256 public createdAt;
-    uint256 public constant reclamationPeriod = 3 minutes;
-    uint256 public constant arbitrationFeeDepositPeriod = 3 minutes;
+    uint256 public constant reclamationPeriod = 3 minutes; // Timeframe is short on purpose to be able to test it quickly. Not for production use.
+    uint256 public constant arbitrationFeeDepositPeriod = 3 minutes; // Timeframe is short on purpose to be able to test it quickly. Not for production use.
 
     enum Status {Initial, Reclaimed, Disputed, Resolved}
     Status public status;
