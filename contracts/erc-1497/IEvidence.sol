@@ -17,7 +17,7 @@ interface IEvidence {
     /**
      * @dev To be emitted when meta-evidence is submitted.
      * @param _metaEvidenceID Unique identifier of meta-evidence.
-     * @param _evidence A link to the meta-evidence JSON.
+     * @param _evidence IPFS path to metaevidence, example: '/ipfs/Qmarwkf7C9RuzDEJNnarT3WZ7kem5bk8DZAzx78acJjMFH/metaevidence.json'
      */
     event MetaEvidence(uint256 indexed _metaEvidenceID, string _evidence);
 
@@ -26,7 +26,7 @@ interface IEvidence {
      * @param _arbitrator The arbitrator of the contract.
      * @param _evidenceGroupID Unique identifier of the evidence group the evidence belongs to.
      * @param _party The address of the party submiting the evidence. Note that 0x0 refers to evidence not submitted by any party.
-     * @param _evidence A URI to the evidence JSON file whose name should be its keccak256 hash followed by .json.
+     * @param _evidence IPFS path to evidence, example: '/ipfs/Qmarwkf7C9RuzDEJNnarT3WZ7kem5bk8DZAzx78acJjMFH/evidence.json'
      */
     event Evidence(
         IArbitrator indexed _arbitrator,
