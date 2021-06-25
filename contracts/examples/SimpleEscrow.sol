@@ -78,6 +78,7 @@ contract SimpleEscrow is IArbitrable {
 
     function depositArbitrationFeeForPayee() public payable {
         require(status == Status.Reclaimed, "Transaction is not in Reclaimed state.");
+        require(block.timestamp - reclaimedAt < arbitrationFeeDepositPeriod, "Arbitration fee deposit time expired");
         arbitrator.createDispute{value: msg.value}(numberOfRulingOptions, "");
         status = Status.Disputed;
     }
