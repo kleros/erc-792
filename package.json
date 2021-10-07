@@ -1,6 +1,6 @@
 {
   "name": "@kleros/erc-792",
-  "version": "8.0.0",
+  "version": "7.0.1",
   "description": "ERC-792: Arbitration Standard",
   "main": "index.js",
   "repository": "https://github.com/kleros/erc-792",
@@ -27,9 +27,7 @@
     "web3": "^1.6.0"
   },
   "scripts": {
-    "sol:build": "run-s -s sol:build:*",
-    "sol:build:7": "hardhat compile",
-    "sol:build:8": "hardhat compile --config hardhat.config.8.js",
+    "sol:build": "hardhat compile",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
