@@ -51,7 +51,7 @@ contract CentralizedArbitratorWithAppeal is IArbitrator {
             Dispute({
                 arbitrated: IArbitrable(msg.sender),
                 choices: _choices,
-                ruling: uint256(-1),
+                ruling: 0,
                 status: DisputeStatus.Waiting,
                 appealPeriodStart: 0,
                 appealPeriodEnd: 0,
@@ -59,9 +59,8 @@ contract CentralizedArbitratorWithAppeal is IArbitrator {
             })
         );
 
-        emit DisputeCreation(disputeID, IArbitrable(msg.sender));
-
         disputeID = disputes.length - 1;
+        emit DisputeCreation(disputeID, IArbitrable(msg.sender));
     }
 
     function disputeStatus(uint256 _disputeID) public override view returns (DisputeStatus status) {
