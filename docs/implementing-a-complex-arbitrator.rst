@@ -50,11 +50,11 @@ First, let's implement the appeal:
           disputeID = disputes.push(Dispute({
             arbitrated: IArbitrable(msg.sender),
             choices: _choices,
-            ruling: uint(-1),
+            ruling: 0,
             status: DisputeStatus.Waiting,
             appealPeriodStart: 0,
             appealPeriodEnd: 0
-            })) -1;
+          }));
 
           emit DisputeCreation(disputeID, IArbitrable(msg.sender));
       }
