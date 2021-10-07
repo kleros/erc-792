@@ -1,5 +1,15 @@
-# erc-792
-Implementation of ERC 792: Arbitration Standard and tutorials for implementing arbitrable and arbitrator contracts.
+# Basic Sample Hardhat Project
 
-Starting from @kleros/erc-792@6.0.0, major version number will be equal to minor Solidity version number. 
-For example @kleros/erc-792@6.x.x contains contracts written with Solidity 0.6.x
+This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+
+Try running some of the following tasks:
+
+```shell
+npx hardhat accounts
+npx hardhat compile
+npx hardhat clean
+npx hardhat test
+npx hardhat node
+node scripts/sample-script.js
+npx hardhat help
+```
