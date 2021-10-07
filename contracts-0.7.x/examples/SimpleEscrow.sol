@@ -6,43 +6,39 @@
  * @deployments: []
  * SPDX-License-Identifier: MIT
  */
-pragma solidity >=0.7;
+pragma solidity ^0.7.0;
 
 import "../IArbitrable.sol";
 import "../IArbitrator.sol";
-import "../erc-1497/IEvidence.sol";
 
-contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
+contract SimpleEscrow is IArbitrable {
     address payable public payer = msg.sender;
     address payable public payee;
     uint256 public value;
     IArbitrator public arbitrator;
+    string public agreement;
+    uint256 public createdAt;
     uint256 public constant reclamationPeriod = 3 minutes; // Timeframe is short on purpose to be able to test it quickly. Not for production use.
     uint256 public constant arbitrationFeeDepositPeriod = 3 minutes; // Timeframe is short on purpose to be able to test it quickly. Not for production use.
-
-    uint256 public createdAt;
-    uint256 public reclaimedAt;
 
     enum Status {Initial, Reclaimed, Disputed, Resolved}
     Status public status;
 
-    enum RulingOptions {RefusedToArbitrate, PayerWins, PayeeWins}
-    uint256 constant numberOfRulingOptions = 2;
+    uint256 public reclaimedAt;
 
-    uint256 constant metaevidenceID = 0;
-    uint256 constant evidenceGroupID = 0;
+    enum RulingOptions {RefusedToArbitrate, PayerWins, PayeeWins}
+    uint256 constant numberOfRulingOptions = 2; // Notice that option 0 is reserved for RefusedToArbitrate.
 
     constructor(
         address payable _payee,
         IArbitrator _arbitrator,
-        string memory _metaevidence
+        string memory _agreement
     ) payable {
         value = msg.value;
         payee = _payee;
         arbitrator = _arbitrator;
+        agreement = _agreement;
         createdAt = block.timestamp;
-
-        emit MetaEvidence(metaevidenceID, _metaevidence);
     }
 
     function releaseFunds() public {
@@ -82,9 +78,8 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
 
     function depositArbitrationFeeForPayee() public payable {
         require(status == Status.Reclaimed, "Transaction is not in Reclaimed state.");
-        uint256 disputeID = arbitrator.createDispute{value: msg.value}(numberOfRulingOptions, "");
+        arbitrator.createDispute{value: msg.value}(numberOfRulingOptions, "");
         status = Status.Disputed;
-        emit Dispute(arbitrator, disputeID, metaevidenceID, evidenceGroupID);
     }
 
     function rule(uint256 _disputeID, uint256 _ruling) public override {
@@ -94,29 +89,23 @@ contract SimpleEscrowWithERC1497 is IArbitrable, IEvidence {
 
         status = Status.Resolved;
         if (_ruling == uint256(RulingOptions.PayerWins)) payer.send(address(this).balance);
-        else payee.send(address(this).balance);
+        else if (_ruling == uint256(RulingOptions.PayeeWins)) payee.send(address(this).balance);
         emit Ruling(arbitrator, _disputeID, _ruling);
     }
 
     function remainingTimeToReclaim() public view returns (uint256) {
-        if (status != Status.Initial) revert("Transaction is not in Initial state.");
+        require(status == Status.Initial, "Transaction is not in Initial state.");
         return
-            (createdAt + reclamationPeriod - block.timestamp) > reclamationPeriod
+            (block.timestamp - createdAt) > reclamationPeriod
                 ? 0
                 : (createdAt + reclamationPeriod - block.timestamp);
     }
 
     function remainingTimeToDepositArbitrationFee() public view returns (uint256) {
-        if (status != Status.Reclaimed) revert("Transaction is not in Reclaimed state.");
+        require(status == Status.Reclaimed, "Transaction is not in Reclaimed state.");
         return
-            (reclaimedAt + arbitrationFeeDepositPeriod - block.timestamp) > arbitrationFeeDepositPeriod
+            (block.timestamp - reclaimedAt) > arbitrationFeeDepositPeriod
                 ? 0
                 : (reclaimedAt + arbitrationFeeDepositPeriod - block.timestamp);
-    }
-
-    function submitEvidence(string memory _evidence) public {
-        require(status != Status.Resolved, "Transaction is not in Resolve state.");
-        require(msg.sender == payer || msg.sender == payee, "Third parties are not allowed to submit evidence.");
-        emit Evidence(arbitrator, evidenceGroupID, msg.sender, _evidence);
     }
 }
