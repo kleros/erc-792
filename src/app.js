@@ -136,11 +136,12 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    if (window.web3 && window.web3.currentProvider.isMetaMask)
-      window.web3.eth.getAccounts((_, accounts) => {
-        this.setState({ activeAddress: accounts[0] })
-      })
-    else console.error('MetaMask account not detected :(')
+    if (window.web3 && window.web3.currentProvider.isMetaMask) {
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      this.setState({ activeAddress: accounts[0] })
+    } else console.error('MetaMask account not detected :(')
 
     window.ethereum.on('accountsChanged', accounts => {
       this.setState({ activeAddress: accounts[0] })

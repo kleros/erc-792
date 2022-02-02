@@ -4,13 +4,14 @@ import web3 from './web3'
 export const contractInstance = address =>
   new web3.eth.Contract(SimpleEscrowWithERC1497.abi, address)
 
-export const deploy = (payer, payee, amount, arbitrator, metaevidence) =>
-  new web3.eth.Contract(SimpleEscrowWithERC1497.abi)
+export const deploy = (payer, payee, amount, arbitrator, metaevidence) => {
+  return new web3.eth.Contract(SimpleEscrowWithERC1497.abi)
     .deploy({
       arguments: [payee, arbitrator, metaevidence],
       data: SimpleEscrowWithERC1497.bytecode
     })
     .send({ from: payer, value: amount })
+}
 
 export const reclaimFunds = (senderAddress, instanceAddress, value) =>
   contractInstance(instanceAddress)
